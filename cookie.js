@@ -46,7 +46,7 @@
     container.appendChild(link);
     document.body.appendChild(container);
 //cookie wazne przez 1 dzien
-	monster.set('cookieinfo', 'true', 1);
+	monster.set('cookieinfo', 'true', 365);
 
     return true;
 })();
