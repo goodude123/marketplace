@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class Currency:
     """ Simple currency class """
@@ -59,6 +60,7 @@ class Data:
                     self.currencies.append(Currency(*args))
 
     def save_currencies(self):
+        """ Save currency information as (course, course date, abbreviation) """
         path = 'currencies/'
         for currency in self.currencies:
             directory = path + currency.code
@@ -92,13 +94,21 @@ class Data:
                 file.close()
 
 
+class RandomData(Data):
+    """ Creates random data, to working with plots """
+    def __init__(self):
+        data = None
+
+
 class Plot:
+    """ Plot object, allow to create and show diagrams, graphs. """
     def __init__(self, abbr):
         self.abbr = abbr
-        self.currency_rates = []
+        self.currency_rates = None
         self.currency_info = None
         self.path = 'currencies/'
 
+    # dont know is that necessary
     def find_currencies(self):
         """ find every subfolder in /currencies/"""
         filenames = os.listdir(self.path)
@@ -123,18 +133,20 @@ class Plot:
             
             if os.path.isfile(csv_path): # checks is csv folder exists
                 with open(csv_path) as csv_file:
-                    df = pd.read_csv(csv_file, index_col=0)
-                    print(df)
-                    self.currency_rates.append(df)
+                    df = pd.read_csv(csv_file)
+                    self.currency_rates = df
                 csv_file.close()
-        print(self.currency_rates, self.currency_info)
                     
+    def create_graph(self):
+        """ Creates and show graph from data """
+        self.read_data()
+        print(self.currency_rates)
+        print(self.currency_rates.columns)
+        self.currency_rates[0:6].plot(kind='bar', x='Date', y='Rate')
+        plt.show()
                     
 
 if __name__ == '__main__':
-    obj = Data()
-    obj.get_currencies()
-    obj.save_currencies()
-    plot = Plot('USD')
-    plot.read_data()
+    plot = Plot('USD') # USD object
+    plot.create_graph()
         
