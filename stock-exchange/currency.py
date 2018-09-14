@@ -1,10 +1,12 @@
+import os
+import json
+import random
+import pandas as pd
+import matplotlib.pyplot as plt
 from request_handle import simple_get
 from bs4 import BeautifulSoup
 from datetime import datetime
-import os
-import json
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 class Currency:
     """ Simple currency class """
@@ -15,7 +17,7 @@ class Currency:
         self.code = code
         self.course = course
         self.date = date
-        
+
 
 class Data:
     """ All scrapped data class """
@@ -55,7 +57,7 @@ class Data:
                     args.extend(tds[1].contents[0].split()) # unit and abbr
                     args.append(float(tds[2].contents[0].replace(',', '.'))) # rate
                     date = datetime.now().strftime('%Y-%m-%d %H:%M:%S') # date
-                    args.append(str(date)) 
+                    args.append(date)
 
                     self.currencies.append(Currency(*args))
 
@@ -67,7 +69,7 @@ class Data:
             # if directory for each currency doesnt exists make it
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            
+
             info_path = directory + '/information.json'
             # if info file doesnt exists make it (save in json currency obj)
             if not os.path.exists(info_path):
@@ -75,12 +77,12 @@ class Data:
                     info = [currency.name, currency.value, currency.code]
                     json.dump(info, file)
                 file.close()
-            
+
             # path to csv file for each currency
             csv_path = directory + '/' + currency.code + '.csv'
             data = [[currency.course, currency.date]]
 
-            if not os.path.exists(csv_path): 
+            if not os.path.exists(csv_path):
                 # create new file
                 with open(csv_path, 'w') as file:
                     df = pd.DataFrame(data, columns=['Rate', 'Date'])
@@ -89,36 +91,51 @@ class Data:
             else:
                 # append to file
                 df = pd.DataFrame(data, columns=['Rate', 'Date'])
-                with open(csv_path, 'a') as file: 
+                with open(csv_path, 'a') as file:
                     df.to_csv(file, header=False, index=False)
                 file.close()
 
 
 class RandomData(Data):
-    """ Creates random data, to working with plots """
+    """ Creates random currency rates from scrapped data """
     def __init__(self):
-        data = None
+        super().__init__()
+        self.get_currencies()
+
+    def choose_operation(self):
+        operations = ['addition', 'subtraction']
+
+        return operations[random.randrange(2)]
+
+    def addition(self, object):
+        result = round(object.course + random.uniform(0.1, 0.2), 4)
+
+        return result
+
+    def subtracion(self, object):
+        result = round(object.course - random.uniform(0.1, 0.2), 4)
+
+        return result
+
+    def edit_currency(self):
+        for currency in self.currencies:
+            operation = self.choose_operation()
+            if operation == 'subtraction':
+                if self.subtracion(currency) <= 0 :
+                    currency.course = self.addition(currency)
+                else:
+                    currency.course = self.subtracion(currency)
+            elif operation == 'addition':
+                currency.course = self.addition(currency)
 
 
 class Plot:
     """ Plot object, allow to create and show diagrams, graphs. """
     def __init__(self, abbr):
-        self.abbr = abbr
         self.currency_rates = None
         self.currency_info = None
         self.path = 'currencies/'
-
-    # dont know is that necessary
-    def find_currencies(self):
-        """ find every subfolder in /currencies/"""
-        filenames = os.listdir(self.path)
-        result = []
-        for filename in filenames:
-            if os.path.isdir(os.path.join(os.path.abspath(self.pathi), filename)):
-                result.append(filename)
-
-        print(result)
-
+        self.abbr = abbr
 
     def read_data(self):
         """ Reads choosen currency data (rates, information) """
@@ -130,23 +147,40 @@ class Plot:
                 with open(json_path) as json_file:
                     self.currency_info = json.load(json_file)
                 json_file.close()
-            
+
             if os.path.isfile(csv_path): # checks is csv folder exists
                 with open(csv_path) as csv_file:
                     df = pd.read_csv(csv_file)
                     self.currency_rates = df
                 csv_file.close()
-                    
+
     def create_graph(self):
         """ Creates and show graph from data """
         self.read_data()
-        print(self.currency_rates)
-        print(self.currency_rates.columns)
-        self.currency_rates[0:6].plot(kind='bar', x='Date', y='Rate')
-        plt.show()
-                    
+        #self.currency_rates.plot(x='Date', y='Rate')
+        date_list = self.currency_rates['Date'].tolist()
+        rates_list = self.currency_rates['Rate'].tolist()
+
+        print(date_list, rates_list)
+"""
+        f, ax = plt.subplots(1)
+        ax.plot(date_list, rates_list)
+        ax.set_ylim(ymin=0)
+        plt.show(f)
+"""
 
 if __name__ == '__main__':
-    plot = Plot('USD') # USD object
+    # scrap data and save it in files
+
+    scrapped = Data()
+    scrapped.get_currencies()
+    scrapped.save_currencies()
+    print(scrapped.currencies)
+
+    rand = RandomData()
+    rand.edit_currency()
+    rand.save_currencies()
+    print(rand.currencies)
+
+    plot = Plot('USD')
     plot.create_graph()
-        
