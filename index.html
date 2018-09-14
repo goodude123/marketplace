@@ -10,25 +10,28 @@
 <script type='text/javascript' src='mn.js'></script>
 <div id='cialo'>
 
-<div id='logo'>
-<font id="lg">Giełdex</font>
+<div id='logo' class="border_goradol">
+<font id="lg">GIEŁDEX</font>
 </div>
 
-<div id='menu'>
-<font id="mn">Rozwiń menu</font>
-<p id="men"><a href="#" id="pod1" onClick="$('#tresc').load('home.html')">HOME</a>
-<a href="#" id="pod1" onClick="$('#tresc').load('kursy.html')">AKTUALNE KURSY</a>
-<a href="#" id="pod1" onClick="$('#tresc').load('history.html')">HISTORIA WALUT</a>
+<div id='menu' class="border_goradol">
+</script>
+<div id="menu_linki">M E N U</div><hr>
+<p id="men"><a href="#" id="pod1" onClick="$('#tresc').load('home.html')">HOME</a> |
+<a href="#" id="pod2" onClick="$('#tresc').load('kursy.html')">AKTUALNE KURSY</a> |
+<a href="#" id="pod3" onClick="$('#tresc').load('history.html')">HISTORIA WALUT</a>
 </p>
 </div>
 
-<div id='tresc'>
+<div id='tresc' class="border_goradol">
+<script>
+$('#tresc').load('home.html');
+</script>
 </div>
-
-</div>
-
-<div id="footer">
+<footer>
 Giełdex co. 2018
+</footer>
 </div>
+
 </body>
 </html>
