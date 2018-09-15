@@ -15,11 +15,11 @@ scrapped_data.save_currencies()
 
 rand = RandomData()
 # Add random Data
-rand.edit_currency()
+rand.random_edit_course_value()
 print(rand.currencies)
 # Save modified data to csv
 rand.save_currencies()
 
-plot = PlotTest()
+plot = PlotTest('USD')
 plot.read_data()
 plot.show_rates_and_info()
