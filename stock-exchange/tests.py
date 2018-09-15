@@ -1,25 +1,35 @@
-from currency import Data, RandomData, Plot
+from currency import Currencies, CurrenciesRandomCourses, Plot
 
-class PlotTest(Plot):
+class TestsPlot(Plot):
+    def __init__(self, abbr):
+        super().__init__(abbr)
+        self.path = 'test_currencies/'
+
     def show_rates_and_info(self):
+        print(self.path)
+        print(self.abbr)
         print(self.currency_rates)
         print(self.currency_info)
 
 
+class TestsCurrencies(Currencies):
+    def set_path_to_save_all_files(self):
+        return 'test_currencies/'
+
 # make Data object
-scrapped_data = Data()
+scrapped_data = TestsCurrencies()
 
 # Scrap Data
 scrapped_data.get_currencies()
 scrapped_data.save_currencies()
 
-rand = RandomData()
+random_currency_course = CurrenciesRandomCourses()
 # Add random Data
-rand.edit_currency()
-print(rand.currencies)
+random_currency_course.random_edit_course_value()
+print(random_currency_course.currencies)
 # Save modified data to csv
-rand.save_currencies()
+random_currency_course.save_currencies()
 
-plot = PlotTest()
-plot.read_data()
-plot.show_rates_and_info()
+tested_plot = TestsPlot('USD')
+tested_plot.read_data()
+tested_plot.show_rates_and_info()

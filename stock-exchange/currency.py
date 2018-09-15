@@ -11,9 +11,9 @@ from datetime import datetime
 class Currency:
     """ Simple currency class """
 
-    def __init__(self, name, value, code, course, date):
+    def __init__(self, name, unit, code, course, date):
         self.name = name
-        self.value = value
+        self.unit = unit
         self.code = code
         self.course = course
         self.date = date
@@ -29,7 +29,7 @@ class Data:
         self.currencies = []
 
 
-    def get_bs4(self):
+    def create_html_code(self):
         """ Creates bs4 html code model """
 
         raw_html = simple_get(self.url)
@@ -37,29 +37,30 @@ class Data:
 
         return bs4_html
 
+    def get_currency_properties(self, table_cells):
+        name = table_cells[0].contents[0]
+        unit, abbreviation = table_cells[1].contents[0].split()
+        rate = float(table_cells[2].contents[0].replace(',', '.'))
+        date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        return [name, unit, abbreviation, rate, date]
 
     def get_currencies(self):
         """ Finds data in bs4 html, get contents and creates Currency models"""
 
-        html = self.get_bs4()
+        html = self.create_html_code()
         for table in html.findAll('table'):
 
             # find correct table
             if table.parent.get('id') == 'article':
 
                 # iterate through table rows
-                for tr in table.findAll('tr')[3:38]:
-                    tds = tr.findAll('td')[:3]
-                    args = []
+                for table_row in table.findAll('tr')[3:38]:
+                    table_data_cells = table_row.findAll('td')
+                    currency_properties = []
+                    currency_properties.extend(self.get_currency_properties(table_data_cells))
 
-                    # unpack content from table data
-                    args.append(tds[0].contents[0]) # currency name
-                    args.extend(tds[1].contents[0].split()) # unit and abbr
-                    args.append(float(tds[2].contents[0].replace(',', '.'))) # rate
-                    date = datetime.now().strftime('%Y-%m-%d %H:%M:%S') # date
-                    args.append(date)
-
-                    self.currencies.append(Currency(*args))
+                    self.currencies.append(Currency(*currency_properties))
 
     def save_currencies(self):
         """ Save currency information as (course, course date, abbreviation) """
@@ -74,7 +75,7 @@ class Data:
             # if info file doesnt exists make it (save in json currency obj)
             if not os.path.exists(info_path):
                 with open(info_path, 'w') as file:
-                    info = [currency.name, currency.value, currency.code]
+                    info = [currency.name, currency.unit, currency.code]
                     json.dump(info, file)
                 file.close()
 
@@ -85,14 +86,14 @@ class Data:
             if not os.path.exists(csv_path):
                 # create new file
                 with open(csv_path, 'w') as file:
-                    df = pd.DataFrame(data, columns=['Rate', 'Date'])
-                    df.to_csv(file, index=False)
+                    data_read_from_file = pd.DataFrame(data, columns=['Rate', 'Date'])
+                    data_read_from_file.to_csv(file, index=False)
                 file.close()
             else:
                 # append to file
-                df = pd.DataFrame(data, columns=['Rate', 'Date'])
+                data_read_from_file = pd.DataFrame(data, columns=['Rate', 'Date'])
                 with open(csv_path, 'a') as file:
-                    df.to_csv(file, header=False, index=False)
+                    data_read_from_file.to_csv(file, header=False, index=False)
                 file.close()
 
 
@@ -107,26 +108,26 @@ class RandomData(Data):
 
         return operations[random.randrange(2)]
 
-    def addition(self, object):
+    def add(self, object):
         result = round(object.course + random.uniform(0.1, 0.2), 4)
 
         return result
 
-    def subtracion(self, object):
+    def subtract(self, object):
         result = round(object.course - random.uniform(0.1, 0.2), 4)
 
         return result
 
-    def edit_currency(self):
+    def random_edit_course_value(self):
         for currency in self.currencies:
             operation = self.choose_operation()
             if operation == 'subtraction':
-                if self.subtracion(currency) <= 0 :
-                    currency.course = self.addition(currency)
+                if self.subtract(currency) <= 0 :
+                    currency.course = self.add(currency)
                 else:
-                    currency.course = self.subtracion(currency)
+                    currency.course = self.subtract(currency)
             elif operation == 'addition':
-                currency.course = self.addition(currency)
+                currency.course = self.add(currency)
 
 
 class Plot:
@@ -150,8 +151,8 @@ class Plot:
 
             if os.path.isfile(csv_path): # checks is csv folder exists
                 with open(csv_path) as csv_file:
-                    df = pd.read_csv(csv_file)
-                    self.currency_rates = df
+                    data_read_from_file = pd.read_csv(csv_file)
+                    self.currency_rates = data_read_from_file
                 csv_file.close()
 
     def create_graph(self):
@@ -178,7 +179,7 @@ if __name__ == '__main__':
     print(scrapped.currencies)
 
     rand = RandomData()
-    rand.edit_currency()
+    rand.random_edit_course_value()
     rand.save_currencies()
     print(rand.currencies)
 
