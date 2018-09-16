@@ -19,7 +19,7 @@ class Currency:
         self.date = date
 
 
-class Data:
+class Currencies:
     """ All scrapped data class """
 
     def __init__(self):
@@ -57,10 +57,13 @@ class Data:
                 # iterate through table rows
                 for table_row in table.findAll('tr')[3:38]:
                     table_data_cells = table_row.findAll('td')
+                    """
                     currency_properties = []
                     currency_properties.extend(self.get_currency_properties(table_data_cells))
+                    """
+                    currency_properties = Currency(*self.get_currency_properties(table_data_cells))
 
-                    self.currencies.append(Currency(*currency_properties))
+                    self.currencies.append(currency_properties)
 
     def save_currencies(self):
         """ Save currency information as (course, course date, abbreviation) """
@@ -71,7 +74,7 @@ class Data:
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
-            info_path = directory + '/information.json'
+            info_path = directory + '/properties.json'
             # if info file doesnt exists make it (save in json currency obj)
             if not os.path.exists(info_path):
                 with open(info_path, 'w') as file:
@@ -97,7 +100,7 @@ class Data:
                 file.close()
 
 
-class RandomData(Data):
+class CurrenciesRandomCourses(Currencies):
     """ Creates random currency rates from scrapped data """
     def __init__(self):
         super().__init__()
@@ -142,7 +145,7 @@ class Plot:
         """ Reads choosen currency data (rates, information) """
         directory = self.path + self.abbr
         if os.path.isdir(directory): # checks is currency folder exists
-            json_path = directory + '/information.json'
+            json_path = directory + '/properties.json'
             csv_path = directory + '/' + self.abbr + '.csv'
             if os.path.isfile(json_path): # checks is json folder exists
                 with open(json_path) as json_file:
@@ -173,7 +176,7 @@ class Plot:
 if __name__ == '__main__':
     # scrap data and save it in files
 
-    scrapped = Data()
+    scrapped = Currencies()
     scrapped.get_currencies()
     scrapped.save_currencies()
     print(scrapped.currencies)
