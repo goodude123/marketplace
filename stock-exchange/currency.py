@@ -2,7 +2,6 @@ import os
 import json
 import random
 import pandas as pd
-import matplotlib.pyplot as plt
 from request_handle import simple_get
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -38,6 +37,7 @@ class Currencies:
         return bs4_html
 
     def get_currency_properties(self, table_cells):
+        """ Gets values from table_cells """
         name = table_cells[0].contents[0]
         unit, abbreviation = table_cells[1].contents[0].split()
         rate = float(table_cells[2].contents[0].replace(',', '.'))
@@ -57,47 +57,88 @@ class Currencies:
                 # iterate through table rows
                 for table_row in table.findAll('tr')[3:38]:
                     table_data_cells = table_row.findAll('td')
-                    """
-                    currency_properties = []
-                    currency_properties.extend(self.get_currency_properties(table_data_cells))
-                    """
                     currency_properties = Currency(*self.get_currency_properties(table_data_cells))
 
                     self.currencies.append(currency_properties)
 
+    def set_path_to_save_all_files(self):
+        return 'currencies/'
+
+    def create_path(self, directory, file_name, file_extension):
+        path = directory + '/' + file_name + file_extension
+        return path
+
+    def set_write_mode(self):
+        return 'w'
+
+    def set_append_mode(self):
+        return 'a'
+
+    def set_columns_names(self):
+        return ['Rate', 'Date']
+
+    def get_course_and_date(self, currency):
+        return [currency.course, currency.date]
+
+    def check_mode_and_set_header(self, mode):
+        if mode == 'a':
+            header = False
+        else:
+            header = True
+        return header
+
+    def create_new_or_append_to_file_courses(self, file, mode, courses):
+        courses_in_data_frame = pd.DataFrame([courses], columns=self.set_columns_names())
+
+        with open(file, mode) as file:
+            courses_in_data_frame.to_csv(
+            file, header=self.check_mode_and_set_header(mode), index=False
+            )
+        file.close()
+
+    def save_properties_in_json_file(self):
+        with open(properties_path, mode) as property_file:
+            properties = property_list
+            json.dump(properties, property_file)
+        property_file.close()
+
+
     def save_currencies(self):
         """ Save currency information as (course, course date, abbreviation) """
-        path = 'currencies/'
+        main_directory_path = self.set_path_to_save_all_files()
         for currency in self.currencies:
-            directory = path + currency.code
-            # if directory for each currency doesnt exists make it
-            if not os.path.exists(directory):
-                os.makedirs(directory)
+            directory_currency = main_directory_path + currency.code
 
-            info_path = directory + '/properties.json'
+            courses_file_currency = self.create_path(
+                directory_currency, currency.code,'.csv')
+
+            properties_currency_file = self.create_path(
+                directory_currency, 'properties', '.json')
+
+            # if directory for each currency doesnt exists make it
+            if not os.path.exists(directory_currency):
+                os.makedirs(directory_currency)
+
+
             # if info file doesnt exists make it (save in json currency obj)
-            if not os.path.exists(info_path):
-                with open(info_path, 'w') as file:
+            if not os.path.exists(properties_currency_file):
+                with open(properties_currency_file, 'w') as file:
                     info = [currency.name, currency.unit, currency.code]
                     json.dump(info, file)
                 file.close()
 
-            # path to csv file for each currency
-            csv_path = directory + '/' + currency.code + '.csv'
-            data = [[currency.course, currency.date]]
+            course_and_date = self.get_course_and_date(currency)
 
-            if not os.path.exists(csv_path):
+            if not os.path.exists(courses_file_currency):
                 # create new file
-                with open(csv_path, 'w') as file:
-                    data_read_from_file = pd.DataFrame(data, columns=['Rate', 'Date'])
-                    data_read_from_file.to_csv(file, index=False)
-                file.close()
+                self.create_new_or_append_to_file_courses(
+                courses_file_currency, self.set_write_mode(), course_and_date
+                )
             else:
                 # append to file
-                data_read_from_file = pd.DataFrame(data, columns=['Rate', 'Date'])
-                with open(csv_path, 'a') as file:
-                    data_read_from_file.to_csv(file, header=False, index=False)
-                file.close()
+                self.create_new_or_append_to_file_courses(
+                courses_file_currency, self.set_append_mode(), course_and_date
+                )
 
 
 class CurrenciesRandomCourses(Currencies):
@@ -128,50 +169,10 @@ class CurrenciesRandomCourses(Currencies):
                 if self.subtract(currency) <= 0 :
                     currency.course = self.add(currency)
                 else:
-                    currency.course = self.subtract(currency)
+                     currency.course = self.subtract(currency)
             elif operation == 'addition':
                 currency.course = self.add(currency)
 
-
-class Plot:
-    """ Plot object, allow to create and show diagrams, graphs. """
-    def __init__(self, abbr):
-        self.currency_rates = None
-        self.currency_info = None
-        self.path = 'currencies/'
-        self.abbr = abbr
-
-    def read_data(self):
-        """ Reads choosen currency data (rates, information) """
-        directory = self.path + self.abbr
-        if os.path.isdir(directory): # checks is currency folder exists
-            json_path = directory + '/properties.json'
-            csv_path = directory + '/' + self.abbr + '.csv'
-            if os.path.isfile(json_path): # checks is json folder exists
-                with open(json_path) as json_file:
-                    self.currency_info = json.load(json_file)
-                json_file.close()
-
-            if os.path.isfile(csv_path): # checks is csv folder exists
-                with open(csv_path) as csv_file:
-                    data_read_from_file = pd.read_csv(csv_file)
-                    self.currency_rates = data_read_from_file
-                csv_file.close()
-
-    def create_graph(self):
-        """ Creates and show graph from data """
-        self.read_data()
-        #self.currency_rates.plot(x='Date', y='Rate')
-        date_list = self.currency_rates['Date'].tolist()
-        rates_list = self.currency_rates['Rate'].tolist()
-
-        print(date_list, rates_list)
-"""
-        f, ax = plt.subplots(1)
-        ax.plot(date_list, rates_list)
-        ax.set_ylim(ymin=0)
-        plt.show(f)
-"""
 
 if __name__ == '__main__':
     # scrap data and save it in files
@@ -179,12 +180,3 @@ if __name__ == '__main__':
     scrapped = Currencies()
     scrapped.get_currencies()
     scrapped.save_currencies()
-    print(scrapped.currencies)
-
-    rand = RandomData()
-    rand.random_edit_course_value()
-    rand.save_currencies()
-    print(rand.currencies)
-
-    plot = Plot('USD')
-    plot.create_graph()
