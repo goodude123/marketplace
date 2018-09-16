@@ -1,4 +1,5 @@
-from currency import Currencies, CurrenciesRandomCourses, Plot
+from plot import Plot
+from currency import Currencies, CurrenciesRandomCourses
 
 class TestsPlot(Plot):
     def __init__(self, abbr):
@@ -10,6 +11,12 @@ class TestsPlot(Plot):
         print(self.abbr)
         print(self.currency_rates)
         print(self.currency_info)
+
+    def check_path(self):
+        if self.path == 'test_currencies/':
+            return True
+        else:
+            return False
 
 
 class TestsCurrencies(Currencies):
