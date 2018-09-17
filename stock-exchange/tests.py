@@ -1,12 +1,15 @@
 from plot import Plot
 from currency import Currencies, CurrenciesRandomCourses
 
+
 class TestsPlot(Plot):
     def __init__(self, abbr):
         super().__init__(abbr)
         self.path = 'test_currencies/'
+        self.currency_directory_path = self.path + self.abbr + '/'
 
     def show_rates_and_info(self):
+        print(self.currency_directory_path)
         print(self.path)
         print(self.abbr)
         print(self.currency_rates)
@@ -18,10 +21,15 @@ class TestsPlot(Plot):
         else:
             return False
 
+    def check_is_rates_none(self):
+        if self.currency_rates is None:
+            print('Currency rates is None')
+
 
 class TestsCurrencies(Currencies):
     def set_path_to_save_all_files(self):
         return 'test_currencies/'
+
 
 # make Data object
 scrapped_data = TestsCurrencies()
@@ -38,5 +46,5 @@ print(random_currency_course.currencies)
 random_currency_course.save_currencies()
 
 tested_plot = TestsPlot('USD')
-tested_plot.read_data()
+tested_plot.if_main_dir_assign_()
 tested_plot.show_rates_and_info()
