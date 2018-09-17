@@ -15,16 +15,6 @@ class TestsPlot(Plot):
         print(self.currency_rates)
         print(self.currency_info)
 
-    def is_good_path(self):
-        if self.path == 'test_currencies/':
-            return True
-        else:
-            return False
-
-    def check_is_rates_none(self):
-        if self.currency_rates is None:
-            print('Currency rates is None')
-
 
 class TestsCurrencies(Currencies):
     def set_path_to_save_all_files(self):
