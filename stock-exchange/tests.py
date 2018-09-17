@@ -12,7 +12,7 @@ class TestsPlot(Plot):
         print(self.currency_rates)
         print(self.currency_info)
 
-    def check_path(self):
+    def is_good_path(self):
         if self.path == 'test_currencies/':
             return True
         else:
