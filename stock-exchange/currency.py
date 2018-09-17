@@ -27,7 +27,6 @@ class Currencies:
         self.url = 'https://www.nbp.pl/home.aspx?f=/kursy/kursya.html'
         self.currencies = []
 
-
     def create_html_code(self):
         """ Creates bs4 html code model """
 
@@ -57,7 +56,9 @@ class Currencies:
                 # iterate through table rows
                 for table_row in table.findAll('tr')[3:38]:
                     table_data_cells = table_row.findAll('td')
-                    currency_properties = Currency(*self.get_currency_properties(table_data_cells))
+                    currency_properties = Currency(
+                        *self.get_currency_properties(table_data_cells)
+                    )
 
                     self.currencies.append(currency_properties)
 
@@ -88,11 +89,12 @@ class Currencies:
         return header
 
     def create_new_or_append_to_file_courses(self, file, mode, courses):
-        courses_in_data_frame = pd.DataFrame([courses], columns=self.set_columns_names())
+        courses_in_data_frame = pd.DataFrame(
+            [courses], columns=self.set_columns_names())
 
         with open(file, mode) as file:
             courses_in_data_frame.to_csv(
-            file, header=self.check_mode_and_set_header(mode), index=False
+                file, header=self.check_mode_and_set_header(mode), index=False
             )
         file.close()
 
@@ -102,15 +104,14 @@ class Currencies:
             json.dump(properties, property_file)
         property_file.close()
 
-
     def save_currencies(self):
-        """ Save currency information as (course, course date, abbreviation) """
+        """ Save currency information as (course, course date, abbreviation)"""
         main_directory_path = self.set_path_to_save_all_files()
         for currency in self.currencies:
             directory_currency = main_directory_path + currency.code
 
             courses_file_currency = self.create_path(
-                directory_currency, currency.code,'.csv')
+                directory_currency, currency.code, '.csv')
 
             properties_currency_file = self.create_path(
                 directory_currency, 'properties', '.json')
@@ -118,7 +119,6 @@ class Currencies:
             # if directory for each currency doesnt exists make it
             if not os.path.exists(directory_currency):
                 os.makedirs(directory_currency)
-
 
             # if info file doesnt exists make it (save in json currency obj)
             if not os.path.exists(properties_currency_file):
@@ -132,12 +132,16 @@ class Currencies:
             if not os.path.exists(courses_file_currency):
                 # create new file
                 self.create_new_or_append_to_file_courses(
-                courses_file_currency, self.set_write_mode(), course_and_date
+                    courses_file_currency,
+                    self.set_write_mode(),
+                    course_and_date
                 )
             else:
                 # append to file
                 self.create_new_or_append_to_file_courses(
-                courses_file_currency, self.set_append_mode(), course_and_date
+                    courses_file_currency,
+                    self.set_append_mode(),
+                    course_and_date
                 )
 
 
@@ -166,10 +170,10 @@ class CurrenciesRandomCourses(Currencies):
         for currency in self.currencies:
             operation = self.choose_operation()
             if operation == 'subtraction':
-                if self.subtract(currency) <= 0 :
+                if self.subtract(currency) <= 0:
                     currency.course = self.add(currency)
                 else:
-                     currency.course = self.subtract(currency)
+                    currency.course = self.subtract(currency)
             elif operation == 'addition':
                 currency.course = self.add(currency)
 
