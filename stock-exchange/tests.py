@@ -8,13 +8,6 @@ class TestsPlot(Plot):
         self.path = 'test_currencies/'
         self.currency_directory_path = self.path + self.abbr + '/'
 
-    def show_rates_and_info(self):
-        print(self.currency_directory_path)
-        print(self.path)
-        print(self.abbr)
-        print(self.currency_rates)
-        print(self.currency_info)
-
 
 class TestsCurrencies(Currencies):
     def set_path_to_save_all_files(self):
@@ -36,5 +29,5 @@ print(random_currency_course.currencies)
 random_currency_course.save_currencies()
 
 tested_plot = TestsPlot('USD')
-tested_plot.if_main_dir_assign_()
-tested_plot.show_rates_and_info()
+tested_plot.create_graph()
+    

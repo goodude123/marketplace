@@ -31,9 +31,3 @@ class LocalCurrency:
         """ Check is main directory exists """
         main_directory = self.path + self.abbr
         return os.path.isdir(main_directory)
-
-    def if_main_dir_assign_(self):
-        """ Assign currency data (rates, information) to object """
-        if self.is_main_directory():  # checks is currency folder exists
-            self.currency_info = self.get_properties_from_json()
-            self.currency_rates = self.get_rates_from_csv_as_dataframe()
