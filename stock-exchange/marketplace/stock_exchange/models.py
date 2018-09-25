@@ -7,8 +7,11 @@ class Currency(models.Model):
     unit = models.IntegerField(default=1)
     abbreviation = models.CharField(max_length=3)
 
+    def __str__(self):
+        return self.abbreviation
 
-class Rates_and_dates(models.Model):
+
+class Rate_and_date(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     rate = models.FloatField()
     date = models.DateTimeField('Course date')
