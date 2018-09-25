@@ -28,6 +28,5 @@ print(random_currency_course.currencies)
 # Save modified data to csv
 random_currency_course.save_currencies()
 
-tested_plot = TestsPlot('USD')
+tested_plot = TestsPlot('AUD')
 tested_plot.create_graph()
-    
