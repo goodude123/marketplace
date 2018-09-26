@@ -25,4 +25,3 @@ def is_good_response(resp):
 
 def log_error(e):
     print(e)
-    
