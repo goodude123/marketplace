@@ -1,20 +1,11 @@
-from request_handle import simple_get
+from django.core.managment.base import BaseCommand
+
+from .request_handle import simple_get
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-class Currency:
-    """ Simple currency class """
-
-    def __init__(self, name, unit, code, course, date):
-        self.name = name
-        self.unit = unit
-        self.code = code
-        self.course = course
-        self.date = date
-
-
-class Currencies:
+class Command(BaseCommand):
     def __init__(self):
         """ Create empty data object """
 

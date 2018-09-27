@@ -1,5 +1,5 @@
 from plot import Plot
-from currency import Currencies, CurrenciesRandomCourses
+from currency_files import CurrenciesFile, CurrenciesRandomCoursesFile
 
 
 class TestsPlot(Plot):
@@ -9,7 +9,7 @@ class TestsPlot(Plot):
         self.currency_directory_path = self.path + self.abbr + '/'
 
 
-class TestsCurrencies(Currencies):
+class TestsCurrencies(CurrenciesFile):
     def set_path_to_save_all_files(self):
         return 'test_currencies/'
 
@@ -21,7 +21,7 @@ scrapped_data = TestsCurrencies()
 scrapped_data.get_currencies()
 scrapped_data.save_currencies()
 
-random_currency_course = CurrenciesRandomCourses()
+random_currency_course = CurrenciesRandomCoursesFile()
 # Add random Data
 random_currency_course.random_edit_course_value()
 print(random_currency_course.currencies)
