@@ -1,6 +1,6 @@
 <<<<<<< HEAD
 __pycache__/
 *.pyc
-db.sqlite3
+db.sqlite3*
 
 >>>>>>> 5d54bfbb20c14a9051c65123d324950e0b319fd6

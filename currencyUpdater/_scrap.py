@@ -1,5 +1,5 @@
-from _currency import Currency
-from _request_handle import simple_get
+from ._currency import Currency
+from ._request_handle import simple_get
 from bs4 import BeautifulSoup
 from datetime import datetime
 
