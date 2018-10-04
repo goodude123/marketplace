@@ -18,9 +18,3 @@ class Rate_and_date(models.Model):
 
     def __str__(self):
         return self.currency.abbreviation + ' ' + self.date.strftime('%Y-%m-%d')
-
-
-#    def save(self, *args, **kwargs):
- #       if not self.id:
-  #          self.date = timezone.now()
-    #    return super(Rate_and_date, self).save(*args, **kwargs)
