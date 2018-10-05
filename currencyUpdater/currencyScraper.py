@@ -28,7 +28,7 @@ def get_rates_and_dates():
         currency_in_db = Currency.objects.get(name=currency.name)
         if currency_in_db:
             print('CURRENCY_IN_DB:', currency_in_db)
-            print('rate, Date: ', end=' ')
+            print('Rate, Date: ', end=' ')
             print(currency.rate, currency.date)
             currency_in_db.rate_and_date_set.create(
                 rate=currency.rate,
