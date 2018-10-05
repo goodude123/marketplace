@@ -5,10 +5,10 @@ from django.db import models
 class Currency(models.Model):
     name = models.CharField(max_length=30)
     unit = models.IntegerField(default=1)
-    abbreviation = models.CharField(max_length=3)
+    code = models.CharField(max_length=3)
 
     def __str__(self):
-        return self.abbreviation
+        return self.code
 
 
 class Rate_and_date(models.Model):
@@ -17,10 +17,4 @@ class Rate_and_date(models.Model):
     date = models.DateTimeField()
 
     def __str__(self):
-        return self.currency.abbreviation + ' ' + self.date.strftime('%Y-%m-%d')
-
-
-#    def save(self, *args, **kwargs):
- #       if not self.id:
-  #          self.date = timezone.now()
-    #    return super(Rate_and_date, self).save(*args, **kwargs)
+        return self.currency.code + ' ' + self.date.strftime('%Y-%m-%d')

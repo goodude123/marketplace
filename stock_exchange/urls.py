@@ -4,8 +4,7 @@ from django.urls import path
 
 urlpatterns = [
     path('', views.MainPage.as_view(), name='index'),
-    path('currency/<str:currency_abbr>/',
-         views.currency_diagram,
-         name='diagram'),
+    path('currency/<str:abbr>/', views.single_currency_page, name='currency'),
     path('converter/', views.currency_converter, name='converter'),
+    path('converter/currency_valid/')
 ]
