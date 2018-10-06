@@ -1,8 +1,9 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
-from stock_exchange.models import Currency
-from forms import CurrencyConverter
+from django.urls import reverse
+from .models import Currency
+from .forms import CurrencyConverterForm
 from currencyUpdater._currency import Currency as SingleCurrency
 
 
@@ -46,13 +47,18 @@ def single_currency_page(request, abbr):
 
 def currency_converter(request):
     if request.method == 'POST':
-        form = CurrencyConverter(request.POST)
+        form = CurrencyConverterForm(request.POST)
 
         if form.is_valid():
+            print('Form is valid.')
+            return HttpResponseRedirect(reverse('exchange:currency'))
+        print('Form isn\'t valid')
 
-            return HttpResponseRedirect('/currency_valid/')
+    else:
+        print('Else')
+        form = CurrencyConverterForm()
 
-    return HttpResponse("You're looking for <b>currency converter</b>.")
+    return render(request, 'converter.html', {'form': form})
 
 
 def currency_diagram(request, currency_abbr):

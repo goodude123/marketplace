@@ -1,7 +1,8 @@
 from django import forms
-from models import Currency
+from .models import Currency
 
 
-class CurrencyConverter(forms.Form):
-    from_currency = forms.ChoiceField(Currency.objects.all())
-    to_currency = forms.ChoiceField(Currency.objects.all())
+class CurrencyConverterForm(forms.Form):
+    all_currencies = [(currency.unit, currency.code) for currency in Currency.objects.all()]
+    from_currency = forms.ChoiceField(choices=all_currencies)
+    to_currency = forms.ChoiceField(choices=all_currencies)
