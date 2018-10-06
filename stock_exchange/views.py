@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from .models import Currency
 from .forms import CurrencyConverterForm
-from currencyUpdater._currency import Currency as SingleCurrency
+from .system.pack import pack_currencies
 
 
 # Create your views here.
@@ -13,22 +13,17 @@ from currencyUpdater._currency import Currency as SingleCurrency
 class MainPage(TemplateView):
     def get(self, request, **kwargs):
         currencies = Currency.objects.all()
-        currencies_to_template = []
-
-        for currency in currencies:
-            name = currency.name
-            code = currency.code
-            unit = currency.unit
-            last_rate = currency.rate_and_date_set.all().latest('date').rate
-            last_date = currency.rate_and_date_set.all().latest('date').date
-
-            currenct_currency = SingleCurrency(
-                name, unit, code, last_rate, last_date)
-
-            # currencies in list ()
-            currencies_to_template.append(currenct_currency)
+        currencies_to_template = pack_currencies(currencies)
 
         return render(request, 'index.html', { 'currencies': currencies_to_template})
+
+
+class TableCurrenciesPage(TemplateView):
+    def get(self, request, **kwargs):
+        currencies = Currency.objects.all()
+        currencies_to_template = pack_currencies(currencies)
+
+        return render(request, 'currencies_table.html', {'currencies': currencies_to_template})
 
 
 def single_currency_page(request, abbr):
@@ -64,4 +59,3 @@ def currency_converter(request):
 def currency_diagram(request, currency_abbr):
     response = "You're looking for <b>currency</b>: %s."
     return HttpResponse(response % currency_abbr)
-
