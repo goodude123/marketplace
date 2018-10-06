@@ -1,0 +1,15 @@
+{% extends 'body.html' %}
+
+{% block content %}
+<table>
+	{% for currency in currencies %}
+	<tr>
+		<td><a href="{% url 'exchange:currency' currency.code %}"><p>Name: {{currency.name}}</p></a></td>
+		<td><p>Abbr: {{currency.code}}</p></td>
+		<td><p>Unit: {{currency.unit}}</p></td>
+		<td><p>Rate: {{currency.rate}}</p></td>
+		<td><p>Date: {{currency.date}}</p></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
