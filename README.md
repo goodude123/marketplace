@@ -9,5 +9,4 @@ It uses exterior libraries/modules:
   - requests
   - BeautifulSoup4
   - apscheduler
-  - contextlib
   
