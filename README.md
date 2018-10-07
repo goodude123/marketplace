@@ -13,3 +13,12 @@ It uses exterior libraries/modules:
   - requests
   - apscheduler
   
+Django-admin custom commands:
+  ./manage.py scrap (
+    --new      scrap constant currency data like: name, abbreviation, unit of course
+    --update   scrap courses and dates
+  )
+  
+  ./manage.py random (
+    creates random course and save it with current date
+  )
