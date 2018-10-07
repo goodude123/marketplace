@@ -17,4 +17,8 @@ class Rate_and_date(models.Model):
     date = models.DateTimeField()
 
     def __str__(self):
-        return self.currency.code + ' ' + self.date.strftime('%Y-%m-%d')
+        return (
+                    self.currency.code + ' ' +
+                    self.date.strftime('%Y-%m-%d') + ' ' +
+                    str(self.rate)
+                )
