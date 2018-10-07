@@ -31,12 +31,19 @@ def single_currency_page(request, abbr):
         currency = get_object_or_404(Currency, code=abbr.upper())
         print('======', currency, '====== Found')
 
-        rate = currency.rate_and_date_set.all().latest('date').rate
-        date = currency.rate_and_date_set.all().latest('date').date
+        courses_db = currency.rate_and_date_set.all().order_by('date').reverse()[:30]
+        courses_to_template = []
+
+        for course_db in courses_db:
+            course = {}
+            course['date'] = course_db.date
+            course['rate'] = course_db.rate
+
+            courses_to_template.append(course)
 
         return render(request, 'single_currency.html',
                     {
-                        'currency': currency, 'rate': rate, 'date': date
+                        'currency': currency, 'courses': courses_to_template,
                     })
 
 

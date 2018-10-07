@@ -1,7 +1,20 @@
 {% extends 'body.html' %}
 
 {% block content %}
-	Currency: {{currency}}</br>
-	Rate: {{rate}}</br>
-	Date: {{date}}
+
+<table>
+	<tr>
+		<th>Currency: {{currency.name}} {{currency.code}}</th>
+	</tr>
+
+	{% for course in courses %}
+	<tr>
+		<td>{{ course.date }}</td>
+		<td>{{ course.rate }}</td>
+	</tr>
+	{% endfor %}
+
+</table>
+
+
 {% endblock %}
