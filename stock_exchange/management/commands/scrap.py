@@ -3,7 +3,7 @@ from ._scrap import Scrap
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Scrap currency data from web.'
 
     def add_arguments(self, parser):
         parser.add_argument(

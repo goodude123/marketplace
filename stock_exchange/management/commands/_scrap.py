@@ -76,10 +76,10 @@ class Scrap:
                     rate=currency.rate,
                     date=currency.date
                 )
-                currency_in_db.save()
 
-                print('Saving', currency_in_db.rate_and_date_set.all())
-                print()
+                currency_in_db.save()
+                print('Saved\n')
+
             else:
                 print('DOESNT FIND', currency.name)
 

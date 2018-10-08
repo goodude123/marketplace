@@ -1,13 +1,15 @@
 <header>
-	<a href="{% url 'exchange:main' %}">Main Page</a>
-	<a href="{% url 'exchange:table' %}">Table currencies</a>
-	<a href="{% url 'exchange:converter' %}">Converter</a>
-	<a href="">Here will be list of currencies</a>
+	<nav>
+		<a href="{% url 'exchange:main' %}">Main Page</a>
+		<a href="{% url 'exchange:table' %}">Table currencies</a>
+		<a href="{% url 'exchange:converter' %}">Converter</a>
+		<a href="">Here will be list of currencies</a>
+	</nav>
 </header>
-
-{% block content %}
-{% endblock %}
-
+<main>
+	{% block content %}
+	{% endblock %}
+</main>
 <footer>
 	<p>Created by Michal Mietus</p>
 </footer>
