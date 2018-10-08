@@ -1,9 +1,13 @@
 {% extends 'body.html' %}	
 
 {% block content %}
-	<form action="{% url 'exchange:converter' %}" method="POST">
-	    {% csrf_token %}
+	<form action="{% url 'exchange:converter' %}" method="GET">
 	    {{form}}
 	    <input type="submit" value="Submit">
 	</form>
+
+	{% if result %}
+		<p>{{ result }}</p>
+	{% endif %}
+
 {% endblock %}
