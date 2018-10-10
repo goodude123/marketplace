@@ -25,5 +25,6 @@ Django-admin custom commands:
 
 Actions I had to do on server:
   - allow server host
-  - static files didn't worked
+  - replace static JavaScript files with CDN (they didn't work)
   - remove apscheduler (threads had been disabled)
+  - enable venv before install outside packages
