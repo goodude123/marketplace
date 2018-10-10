@@ -22,3 +22,8 @@ Django-admin custom commands:
   ./manage.py random (
     creates random course and save it with current date
   )
+
+Actions I had to do on server:
+  - allow server host
+  - static files didn't worked
+  - remove apscheduler (threads had been disabled)
