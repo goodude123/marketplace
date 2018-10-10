@@ -20,7 +20,7 @@ class MainPage(TemplateView):
 
 
 def chart(request, abbr):
-    return render(request, 'charts.html', {'abbr': abbr})
+    return render(request, 'charts.html', {'abbr': abbr.upper()})
 
 
 @api_view()
