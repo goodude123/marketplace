@@ -7,6 +7,10 @@ This project is about web site where you can check currency rates (mainly for PL
 You can here check actually and past courses, see tables with most popular currencies, convert them,
 check their rate history, diagrams rate in time and many more.
 
+Running:
+  python manage.py runserver --noreload 
+  (--noreload flag is by apscheduler)
+
 It uses exterior libraries/modules:
   - Django
   - BeautifulSoup4
