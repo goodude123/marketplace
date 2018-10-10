@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
@@ -5,9 +6,9 @@ from .models import Currency
 from .forms import CurrencyConverterForm
 from .system.pack import pack_currencies
 from .system.real_value import real_course_value
-
-
-# Create your views here.
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 
 class MainPage(TemplateView):
@@ -16,6 +17,29 @@ class MainPage(TemplateView):
         currencies_to_template = pack_currencies(currencies)
 
         return render(request, 'index.html', { 'currencies': currencies_to_template})
+
+
+def chart(request, abbr):
+    return render(request, 'charts.html', {'abbr': abbr})
+
+
+@api_view()
+def api_chart_data(request, abbr):
+    currency = get_object_or_404(Currency, code=abbr.upper())
+    courses_in_db = currency.rate_and_date_set.all().order_by('-date')[:30]
+    rates = []
+    dates = []
+
+    for course in courses_in_db:
+        rates.append(course.rate)
+        dates.append(course.date)
+
+    data = {
+        'rates': rates,
+        'dates': dates,
+
+    }
+    return Response(data)
 
 
 class TableCurrenciesPage(TemplateView):
@@ -90,3 +114,4 @@ def currency_converter(request):
 def currency_diagram(request, currency_abbr):
     response = "You're looking for <b>currency</b>: %s."
     return HttpResponse(response % currency_abbr)
+
