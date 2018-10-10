@@ -5,6 +5,7 @@
 <table>
 	<tr>
 		<th>Currency: {{currency.name}} {{currency.code}}</th>
+		<td><a href="{% url 'exchange:chart' currency.code %}">Graph</a></td>
 	</tr>
 
 	{% for course in courses %}

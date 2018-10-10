@@ -9,6 +9,7 @@
 		<td><p>Unit: {{currency.unit}}</p></td>
 		<td><p>Rate: {{currency.rate}}</p></td>
 		<td><p>Date: {{currency.date}}</p></td>
+		<td><a href="{% url 'exchange:chart' currency.code %}">History</a></td>
 	</tr>
 	{% endfor %}
 </table>
