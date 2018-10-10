@@ -1,8 +1,9 @@
+from datetime import datetime
+from bs4 import BeautifulSoup
 from stock_exchange.models import Currency
 from ._currency import SingleCurrency
 from ._request_handle import simple_get
-from bs4 import BeautifulSoup
-from datetime import datetime
+from ._save import save
 
 
 class Scrap:
@@ -67,20 +68,7 @@ class Scrap:
         for currency in self.currencies:
             # warnings.filterwarnings("ignore", category=RuntimeWarning)
             currency_in_db = Currency.objects.get(name=currency.name)
-            if currency_in_db:
-                print('CURRENCY_IN_DB:', currency_in_db)
-                print('Rate, Date: ', end=' ')
-                print(currency.rate, currency.date)
-
-                currency_in_db.rate_and_date_set.create(
-                    rate=currency.rate,
-                    date=currency.date
-                )
-
-                currency_in_db.save()
-                print('Saved\n')
-
-            else:
-                print('DOESNT FIND', currency.name)
+            rate_and_date = [currency.rate, currency.date]
+            save(currency_in_db, rate_and_date)
 
         print('\nLength after adding data', len(Currency.objects.get(id=1).rate_and_date_set.all()))
