@@ -1,0 +1,55 @@
+
+<canvas id="myChart"></canvas>
+
+
+{% include 'base/jquery.html' %}
+{% include 'base/chart-js.html' %}
+<script>
+{% block jquery %}
+var endpoint = '/api/chart/{{abbr}}'
+var defaultData = []
+var defaultLabels = []
+$.ajax({
+	method: 'GET',
+	url: endpoint,
+    // function get data send from api-data
+	success: function(data){
+        defaultLabels = data.dates;
+        defaultData = data.rates;
+        console.log(data.dates)
+        console.log(data.rates)
+		setChart();
+    },
+	error: function(error_data){
+		console.log('error');
+		console.log(error_data);
+    }
+}
+	
+)
+
+function setChart() {
+    var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: defaultLabels,      // here go data from success ajax method
+                datasets: [{
+                    label: '{{abbr}}',
+                    data: defaultData,      // and here
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                    ],
+                    borderColor: [          // chart line color
+                        'rgba(255,99,132,1)',
+                    ],
+                }]
+            },
+        })
+    }
+
+
+{% endblock %}
+</script>
+
+
