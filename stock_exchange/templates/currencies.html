@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+	{% for currency in currencies %}
+	<div style='text-align:center'>
+		{# currency is linked to single page #}
+		<a href="{% url 'exchange:currency' currency.code %}"><p>Name: {{currency.name}}</p></a>
+		<p>Abbr: {{currency.code}}</p>
+		<p>Unit: {{currency.unit}}</p>
+		<p>Rate: {{currency.rate}}</p>
+		<p>Date: {{currency.date}}</p>
+		</br>
+	</div>
+	{% endfor %} 	
+
+{% endblock %}
