@@ -11,12 +11,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 
-class MainPage(TemplateView):
+class Currencies(TemplateView):
     def get(self, request, **kwargs):
         currencies = Currency.objects.all()
         currencies_to_template = pack_currencies(currencies)
 
-        return render(request, 'index.html', { 'currencies': currencies_to_template})
+        return render(request, 'currencies.html', { 'currencies': currencies_to_template})
 
 
 def chart(request, abbr):
