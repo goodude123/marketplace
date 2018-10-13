@@ -1,4 +1,4 @@
-{% extends 'body.html' %}
+{% extends 'base/base.html' %}
 
 {% block content %}
 <canvas id="myChart"></canvas>
@@ -8,7 +8,7 @@
 
 <script>
     {% block jquery %}
-    var endpoint = '/api/chart/{{abbr}}'
+    var endpoint = "{% url 'exchange:api-data' abbr %}"
     var defaultData = []
     var defaultLabels = []
     $.ajax({
