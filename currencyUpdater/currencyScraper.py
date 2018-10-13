@@ -1,6 +1,6 @@
 from ._scrap import Scrap
 from stock_exchange.models import Currency
-#import warnings
+from stock_exchange.management.commands._save import save
 
 
 def get_currencies():
@@ -24,20 +24,9 @@ def get_rates_and_dates():
     scrapped.get_currencies()
     print('Length', len(scrapped.currencies))
     for currency in scrapped.currencies:
-        # warnings.filterwarnings("ignore", category=RuntimeWarning) 
         currency_in_db = Currency.objects.get(name=currency.name)
-        if currency_in_db:
-            print('CURRENCY_IN_DB:', currency_in_db)
-            print('Rate, Date: ', end=' ')
-            print(currency.rate, currency.date)
-            currency_in_db.rate_and_date_set.create(
-                rate=currency.rate,
-                date=currency.date
-            )
-            currency_in_db.save()
-            print('Saving', currency_in_db.rate_and_date_set.all())
-            print()
-        else:
-            print('DOESNT FIND', currency.name)
+        rate_and_date = [currency.rate, currency.date]
+
+        save(currency_in_db, rate_and_date)
 
     print('\nLength after adding data', len(Currency.objects.get(id=1).rate_and_date_set.all()))

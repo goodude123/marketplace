@@ -1,11 +1,11 @@
-{% extends 'body.html' %}
+{% extends 'base/base.html' %}
 
 {% block content %}
 
 <table>
 	<tr>
 		<th>Currency: {{currency.name}} {{currency.code}}</th>
-		<td><a href="{% url 'exchange:chart' currency.code %}">Graph</a></td>
+		<td><a href="{% url 'exchange:chart' currency.code %}">History</a></td>
 	</tr>
 
 	{% for course in courses %}
@@ -16,6 +16,5 @@
 	{% endfor %}
 
 </table>
-
 
 {% endblock %}
