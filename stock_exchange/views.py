@@ -1,12 +1,9 @@
-import datetime
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from .models import Currency
 from .forms import CurrencyConverterForm
 from .system.pack import pack_currencies
 from .system.real_value import real_course_value
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -99,8 +96,6 @@ def currency_converter(request):
                     to_currency.unit
                 ]
 
-                print(from_course_unit)
-
                 from_real_course_value = real_course_value(from_course_unit)
                 to_real_course_value = real_course_value(to_course_unit)
 
@@ -109,9 +104,3 @@ def currency_converter(request):
                 return render(request, 'converter.html', {'form': form, 'result': result})
 
         print('Form isn\'t valid')
-
-
-def currency_diagram(request, currency_abbr):
-    response = "You're looking for <b>currency</b>: %s."
-    return HttpResponse(response % currency_abbr)
-
