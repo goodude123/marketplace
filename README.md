@@ -16,7 +16,7 @@ It uses exterior libraries/modules:
   - djangorestframework
   
 Repository download:
-  git clone https://github.com/goodude123/marketplace.git
+  - git clone https://github.com/goodude123/marketplace.git
   
 Environment installation:
   - python3 -m venv /path/to/new/virtual/environment
@@ -28,7 +28,7 @@ Environment installation:
   - pip3 install djangorestframework
 
 Running:
-  python manage.py runserver --noreload 
+  - python manage.py runserver --noreload 
   (--noreload flag is by apscheduler)
 
   
