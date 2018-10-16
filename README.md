@@ -1,4 +1,4 @@
-# marketplace
+# Marketplace
 Marketplace/stock-exchange
 
 Currency base project.
