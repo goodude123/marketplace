@@ -8,7 +8,7 @@ You can here check actually and past courses, see tables with most popular curre
 check their rate history, diagrams rate in time and many more.
 
 
-It uses exterior libraries/modules:
+It uses exterior libraries/modules/frameworks:
   - Django
   - BeautifulSoup4
   - requests
