@@ -35,8 +35,8 @@ Running:
 
 Django-admin custom commands:
   - ./manage.py scrap (
-    - --new      scrap constant currency data like: name, abbreviation, unit of course
-    - --update   scrap courses and dates
+    - --new  --> scrap constant currency data like: name, abbreviation, unit of course
+    - --update  --> scrap courses and dates
   )
   
   ./manage.py random (
