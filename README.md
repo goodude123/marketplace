@@ -15,6 +15,9 @@ It uses exterior libraries/modules:
   - apscheduler
   - djangorestframework
   
+Repository download:
+  git clone https://github.com/goodude123/marketplace.git
+  
 Environment installation:
   - python3 -m venv /path/to/new/virtual/environment
   - source /path/to/new/virtual/environment/bin/activate
