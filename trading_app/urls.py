@@ -6,5 +6,6 @@ app_name = 'trading_app'
 
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),
-    path('user/', views.User.as_view(), name='user')
+    path('user/', views.User.as_view(), name='user'),
+    path('signup/', views.signup, name='signup')
 ]
