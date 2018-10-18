@@ -128,5 +128,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'trading_app:home'
 LOGOUT_REDIRECT_URL = 'trading_app:home'
