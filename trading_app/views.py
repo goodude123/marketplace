@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User as django_user
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from trading_app.forms import SignUpForm
@@ -26,8 +27,8 @@ def signup(request):
             print(form.cleaned_data.get('username'))
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request, user)
+            authenticated_user = authenticate(username=username, password=password)
+            login(request, authenticated_user)
             return redirect(reverse('trading_app:home'))
     else:
         form = SignUpForm()
