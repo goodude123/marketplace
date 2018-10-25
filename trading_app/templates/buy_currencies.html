@@ -1,5 +1,10 @@
-<form method='POST'>
-    {% csrf_token %}
-    {{ form }}
-    <button type='submit'>Buy</button>
-</form>
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form }}
+        <button type='submit'>Buy</button>
+    </form>
+{% endblock %}
