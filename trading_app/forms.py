@@ -15,6 +15,16 @@ class SignUpForm(UserCreationForm):
 
 
 class BuyCurrencyForm(forms.Form):
-    all_currencies = [(currency.pk, currency.code) for currency in Currency.objects.all()]
-    currency_code = forms.ChoiceField(label='From', choices=all_currencies)
-    quantity = forms.IntegerField(min_value=1)
+    def __init__(self, initial_code='USD', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        all_currencies = [(currency.pk, currency.code) for currency in Currency.objects.all()]
+
+        # Find index by currency code from url
+        initial_index = 1
+        for index, code in dict(all_currencies).items():
+            if code == initial_code:
+                initial_index = index
+
+        self.fields['currency_code'] = forms.ChoiceField(label='From', choices=all_currencies, initial=initial_index)
+        self.fields['quantity'] = forms.IntegerField(min_value=1)
