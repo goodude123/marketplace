@@ -9,5 +9,5 @@ urlpatterns = [
     path('user/', views.User.as_view(), name='user'),
     path('signup/', views.signup, name='signup'),
     path('owned/', views.owned_currencies, name='owned_currencies'),
-    path('buy/', views.buy_currencies, name='buy')
+    path('buy/<str:initial>/', views.buy_currencies, name='buy')
 ]

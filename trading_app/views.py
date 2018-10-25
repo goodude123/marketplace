@@ -42,9 +42,9 @@ def owned_currencies(request):
     return render(request, 'owned_currencies.html', {'owned': owned})
 
 
-def buy_currencies(request):
+def buy_currencies(request, initial):
     if request.method == 'POST':
-        form = BuyCurrencyForm(request.POST)
+        form = BuyCurrencyForm(data=request.POST)
         if form.is_valid():
             currency_code = form.cleaned_data.get('currency_code')
             quantity = form.cleaned_data.get('quantity')
@@ -52,6 +52,8 @@ def buy_currencies(request):
 
             return redirect(reverse('trading_app:owned_currencies'))
 
+        return render(request, 'buy_currencies.html', {'form': form})
+
     else:
-        form = BuyCurrencyForm()
+        form = BuyCurrencyForm(initial_code=initial)
         return render(request, 'buy_currencies.html', {'form': form})
