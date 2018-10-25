@@ -13,6 +13,7 @@
 			<a href="{% url 'exchange:table' %}">Table currencies</a>
 			<a href="{% url 'exchange:converter' %}">Converter</a>
 			{% if user.is_authenticated %}
+				<a href="{% url 'trading_app:owned_currencies' %}">Owned</a>
 				<a href="{% url 'trading_app:user' %}">Profile</a>
 		        <a href="{% url 'logout' %}">Logout</a>
 		        <p>Your money: {{ user.profile.money }}</p>
