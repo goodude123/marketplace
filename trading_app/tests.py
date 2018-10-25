@@ -62,8 +62,7 @@ class LoginTestCase(TestCase):
         response = self.client.post(reverse('login'),
                                     {
                                         'username': 'usernamenotindb',
-                                        'password': 'zaq1@WSX'
-                                    },
+                                        'password': 'zaq1@WSX'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registration/login.html')
@@ -72,8 +71,7 @@ class LoginTestCase(TestCase):
         "Logout redirect us to home page."
         self.client.login(
                         username=username,
-                        password=password
-                        )
+                        password=password)
         response = self.client.get(reverse('logout'))
         self.assertRedirects(response, reverse('trading_app:home'))
 
@@ -98,8 +96,7 @@ class SignUpTestCase(TestCase):
                                         'last_name': last_name,
                                         'email': email,
                                         'password1': password,
-                                        'password2': password
-                                    })
+                                        'password2': password})
         self.assertRedirects(response, reverse('trading_app:home'))
 
     def test_invalid_sign_up_user_alread_in_database(self):
@@ -118,8 +115,7 @@ class SignUpTestCase(TestCase):
         "Logged user is redirected to home trying access sign up view."
         self.client.login(
                         username=username,
-                        password=password
-                        )
+                        password=password)
         response = self.client.get(reverse('trading_app:signup'))
         self.assertRedirects(response, reverse('trading_app:home'))
 
@@ -152,8 +148,7 @@ class BuyingCurrenciesTestCase(TestCase):
         currency = Currency.objects.create(
                                         name='dolar',
                                         unit=1,
-                                        code='USD'
-                                        )
+                                        code='USD')
         currency.save()
 
         currency.rate_and_date_set.create(rate=1, date=timezone.now())
@@ -161,24 +156,37 @@ class BuyingCurrenciesTestCase(TestCase):
         user = User.objects.get(username=username)
         self.profile = user.profile
 
-    def test_valid_currency_bought(self):
+    def test_model_valid_currency_bought(self):
         "Valid bought test, user has enough money to buy."
         buys_quantity = 10
-        currency_abbr = 'USD'
+        currency_primary_key = 1
+        currency_code = 'USD'
 
-        self.profile.buy(currency_abbr, buys_quantity)
-        bought = self.profile.boughtcurrency_set.get(currency_abbreviation=currency_abbr)
+        self.profile.buy(currency_primary_key, buys_quantity)
+        bought = self.profile.boughtcurrency_set.get(currency_abbreviation=currency_code)
 
         self.assertEqual(bought.amount, 10)
 
-    def test_buying_invalid_too_high_price(self):
+    def test_model_buying_invalid_too_high_price(self):
         "Invalid bought test, user hasn't enought money."
         buys_quantity = 100000
-        currency_abbr = 'USD'
+        currency_primary_key = 1
 
         self.assertRaises(errors.BuyingError, lambda:
-                self.profile.buy(currency_abbr, buys_quantity)
-            )
+                self.profile.buy(currency_primary_key, buys_quantity))
+
+    def test_model_buying_currencies_already_having(self):
+        "Buying currencies already having. Bought currencies two times."
+        buys_quantity = 5
+        currency_primary_key = 1
+        currency_code = 'USD'
+
+        self.profile.buy(currency_primary_key, buys_quantity)
+        self.profile.buy(currency_primary_key, buys_quantity)
+
+        bought = self.profile.boughtcurrency_set.get(currency_abbreviation=currency_code)
+
+        self.assertEqual(bought.amount, 2 * buys_quantity)
 
 
 class SellingCurrenciesTestCase(TestCase):
@@ -205,28 +213,29 @@ class SellingCurrenciesTestCase(TestCase):
         user = User.objects.get(username=username)
         self.profile = user.profile
 
-    def test_valid_sold_currencies(self):
+    def test_model_valid_sold_currencies(self):
         "Valid sold currencies."
         buys_quantity = 10
         sells_quantity = 8
-        currency_abbr = 'USD'
+        currency_primary_key = 1
+        currency_code = 'USD'
 
-        self.profile.buy(currency_abbr, buys_quantity)
+        self.profile.buy(currency_primary_key, buys_quantity)
 
-        self.profile.sell(currency_abbr, sells_quantity)
-        already_owned_currency = self.profile.boughtcurrency_set.get(currency_abbreviation=currency_abbr)
+        self.profile.sell(currency_primary_key, sells_quantity)
+        already_owned_currency = self.profile.boughtcurrency_set.get(currency_abbreviation=currency_code)
 
         difference = buys_quantity - sells_quantity
         self.assertEqual(already_owned_currency.amount, difference)
 
-    def test_invalid_sold_currencies_too_many(self):
+    def test_model_invalid_sold_currencies_too_many(self):
         "Invalid test, tried to sell more currencies than had."
         buys_quantity = 2
         sells_quantity = 8
-        currency_abbr = 'USD'
+        currency_primary_key = 1
+        currency_code = 'USD'
 
-        self.profile.buy(currency_abbr, buys_quantity)
+        self.profile.buy(currency_primary_key, buys_quantity)
 
         self.assertRaises(errors.SellingError, lambda:
-                self.profile.sell(currency_abbr, sells_quantity)
-            )
+                    self.profile.sell(currency_primary_key, sells_quantity))
