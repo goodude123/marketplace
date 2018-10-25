@@ -2,11 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.models import User as django_user
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from trading_app.forms import SignUpForm
+from stock_exchange.models import Currency
+from trading_app.forms import SignUpForm, BuyCurrencyForm
 from trading_app.decorators import prevent_logged_users
+
+from django.http import HttpResponse
 
 
 class Home(TemplateView):
@@ -33,3 +35,23 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
+
+def owned_currencies(request):
+    owned = request.user.profile.boughtcurrency_set.all()
+    return render(request, 'owned_currencies.html', {'owned': owned})
+
+
+def buy_currencies(request):
+    if request.method == 'POST':
+        form = BuyCurrencyForm(request.POST)
+        if form.is_valid():
+            currency_code = form.cleaned_data.get('currency_code')
+            quantity = form.cleaned_data.get('quantity')
+            request.user.profile.buy(currency_code, quantity)
+
+            return redirect(reverse('trading_app:owned_currencies'))
+
+    else:
+        form = BuyCurrencyForm()
+        return render(request, 'buy_currencies.html', {'form': form})
