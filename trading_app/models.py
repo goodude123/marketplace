@@ -19,7 +19,8 @@ class Profile(models.Model):
         "Substracs price from money and adds currencies to owned."
 
         rate = self.get_last_rate(to_bought_index)
-        price = rate * quantity
+        unit = self.get_currency_unit(to_bought_index)
+        price = rate * quantity * unit
 
         code = self.get_currency_code(to_bought_index)
 
@@ -47,13 +48,14 @@ class Profile(models.Model):
 
         rate = self.get_last_rate(index_to_database) - 0.004
         code = self.get_currency_code(index_to_database)
+        unit = self.get_currency_unit(index_to_database)
 
         try:
             owned_selling_currency = self.boughtcurrency_set.get(currency_abbreviation=code)
             if owned_selling_currency.amount >= quantity:
                 owned_selling_currency.amount -= quantity
                 owned_selling_currency.save()
-                self.money += rate * quantity
+                self.money += rate * quantity * unit
             else:
                 raise errors.SellingError('You dont have enough currencies')
         except ObjectDoesNotExist:
@@ -62,6 +64,10 @@ class Profile(models.Model):
     def get_currency_from_database(self, currency_index):
         currency = Currency.objects.get(pk=currency_index)
         return currency
+
+    def get_currency_unit(self, currency_index):
+        currency = Currency.objects.get(pk=currency_index)
+        return currency.unit
 
     def get_currency_code(self, currency_index):
         currency = self.get_currency_from_database(currency_index)
