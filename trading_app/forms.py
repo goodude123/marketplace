@@ -26,5 +26,5 @@ class BuyCurrencyForm(forms.Form):
             if code == initial_code:
                 initial_index = index
 
-        self.fields['currency_code'] = forms.ChoiceField(label='From', choices=all_currencies, initial=initial_index)
         self.fields['quantity'] = forms.IntegerField(min_value=1)
+        self.fields['currency_code'] = forms.ChoiceField(choices=all_currencies, initial=initial_index)

@@ -4,11 +4,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from stock_exchange.models import Currency
 from trading_app.forms import SignUpForm, BuyCurrencyForm
 from trading_app.decorators import prevent_logged_users
-
-from django.http import HttpResponse
 
 
 class Home(TemplateView):
@@ -26,7 +23,6 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()  # user is already saved
-            print(form.cleaned_data.get('username'))
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             authenticated_user = authenticate(username=username, password=password)
@@ -37,11 +33,13 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+@login_required
 def owned_currencies(request):
     owned = request.user.profile.boughtcurrency_set.all()
     return render(request, 'owned_currencies.html', {'owned': owned})
 
 
+@login_required
 def buy_currencies(request, initial):
     if request.method == 'POST':
         form = BuyCurrencyForm(data=request.POST)
@@ -52,8 +50,8 @@ def buy_currencies(request, initial):
 
             return redirect(reverse('trading_app:owned_currencies'))
 
-        return render(request, 'buy_currencies.html', {'form': form})
+        return render(request, 'buy_currencies.html', {'form': form, 'initial': initial})
 
     else:
         form = BuyCurrencyForm(initial_code=initial)
-        return render(request, 'buy_currencies.html', {'form': form})
+        return render(request, 'buy_currencies.html', {'form': form, 'initial': initial})
