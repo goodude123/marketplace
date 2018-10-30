@@ -2,7 +2,6 @@ from django.utils import timezone
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
-from trading_app.models import Profile
 from trading_app import errors
 from stock_exchange.models import Currency
 
@@ -127,34 +126,43 @@ class SignUpTestCase(TestCase):
                             'last_name': last_name,
                             'email': email,
                             'password1': password,
-                            'password2': password
-                        })
+                            'password2': password})
         user = User.objects.get(username='unregistereduser')
         self.assertEqual(user.profile.money, 100)
+
+
+def create_user():
+    user = User.objects.create_user(username=username,
+                                    password=password,
+                                    first_name=first_name,
+                                    last_name=last_name,
+                                    email=email)
+    user.save()
+
+
+def create_currency():
+    currency = Currency.objects.create(
+                                        name='dolar',
+                                        unit=1,
+                                        code='USD')
+    currency.save()
+
+    currency.rate_and_date_set.create(rate=1, date=timezone.now())
+
+
+def get_user():
+    user = User.objects.get(username=username)
+
+    return user
 
 
 class BuyingCurrenciesTestCase(TestCase):
 
     def setUp(self):
         "Created user and new currency"
-        user = User.objects.create_user(username=username,
-                                        password=password,
-                                        first_name=first_name,
-                                        last_name=last_name,
-                                        email=email
-                                        )
-        user.save()
-
-        currency = Currency.objects.create(
-                                        name='dolar',
-                                        unit=1,
-                                        code='USD')
-        currency.save()
-
-        currency.rate_and_date_set.create(rate=1, date=timezone.now())
-
-        user = User.objects.get(username=username)
-        self.profile = user.profile
+        create_user()
+        create_currency()
+        self.profile = get_user().profile
 
     def test_model_valid_currency_bought(self):
         "Valid bought test, user has enough money to buy."
@@ -193,25 +201,9 @@ class SellingCurrenciesTestCase(TestCase):
 
     def setUp(self):
         "Created user and new currency"
-        user = User.objects.create_user(username=username,
-                                        password=password,
-                                        first_name=first_name,
-                                        last_name=last_name,
-                                        email=email
-                                        )
-        user.save()
-
-        currency = Currency.objects.create(
-                                        name='dolar',
-                                        unit=1,
-                                        code='USD'
-                                        )
-        currency.save()
-
-        currency.rate_and_date_set.create(rate=1, date=timezone.now())
-
-        user = User.objects.get(username=username)
-        self.profile = user.profile
+        create_user()
+        create_currency()
+        self.profile = get_user().profile
 
     def test_model_valid_sold_currencies(self):
         "Valid sold currencies."
@@ -233,9 +225,25 @@ class SellingCurrenciesTestCase(TestCase):
         buys_quantity = 2
         sells_quantity = 8
         currency_primary_key = 1
-        currency_code = 'USD'
 
         self.profile.buy(currency_primary_key, buys_quantity)
 
         self.assertRaises(errors.SellingError, lambda:
                     self.profile.sell(currency_primary_key, sells_quantity))
+
+
+class OwnedCurrenciesView(TestCase):
+    def setUp(self):
+        create_user()
+        create_currency()
+
+    def test_logged_user_acces_to_owned_currencies(self):
+        "Logged user successfuly gets owned view."
+        self.client.login(username=username, password=password)
+        response = self.client.post(reverse('trading_app:owned_currencies'))
+        self.assertTemplateUsed(response, 'owned_currencies.html')
+
+    def test_unlogged_user_access_to_owned_currencies(self):
+        "Invalid try to access owned page. Unlogged user is redirected to login view."
+        response = self.client.post(reverse('trading_app:owned_currencies'))
+        self.assertRedirects(response, '/login/?next=/owned/')
