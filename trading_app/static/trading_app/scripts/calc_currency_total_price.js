@@ -15,15 +15,20 @@ function calculateAndPrintTotalPrice(rates, units){
     index = document.getElementById('id_currency_code').selectedIndex;
     rate = rates[index];
     unit = units[index];
-    price = quantity * rate * unit, 4;
-    price = price.toFixed(4);
-    insertTotalPriceIntoId('totalPrice', price);
+    if (quantity > 0) {
+        price = quantity * rate * unit, 4;
+        price = price.toFixed(4);
+        response = 'Total Price: ' + price
+    } else {
+        response = 'Invalid Value.'
+    }
+    insertTotalPriceIntoId('totalPrice', response);
 }
 
 
-function insertTotalPriceIntoId(id, price){
+function insertTotalPriceIntoId(id, response){
     elementToInsertPrice = document.getElementById(id);
-    elementToInsertPrice.innerHTML = 'Price ' + price;
+    elementToInsertPrice.innerHTML = response;
 }
 
 
