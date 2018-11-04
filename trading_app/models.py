@@ -18,11 +18,11 @@ class Profile(models.Model):
     def buy(self, to_bought_index, quantity):
         "Substracs price from money and adds currencies to owned."
 
-        rate = self.get_last_rate(to_bought_index)
-        unit = self.get_currency_unit(to_bought_index)
+        rate = self.__get_last_rate(to_bought_index)
+        unit = self.__get_currency_unit(to_bought_index)
         price = round(rate * quantity * unit, 5)
 
-        code = self.get_currency_code(to_bought_index)
+        code = self.__get_currency_code(to_bought_index)
 
         if price <= self.money:
             self.money -= price
@@ -46,9 +46,9 @@ class Profile(models.Model):
     def sell(self, index_to_database, quantity):
         "Deletes currencies from profile owned, adding money."
 
-        rate = self.get_last_rate(index_to_database) - 0.004
-        code = self.get_currency_code(index_to_database)
-        unit = self.get_currency_unit(index_to_database)
+        rate = self.__get_last_rate(index_to_database) - 0.004
+        code = self.__get_currency_code(index_to_database)
+        unit = self.__get_currency_unit(index_to_database)
 
         try:
             owned_selling_currency = self.boughtcurrency_set.get(currency_abbreviation=code)
@@ -61,20 +61,20 @@ class Profile(models.Model):
         except ObjectDoesNotExist:
             print('You never had that currency.')
 
-    def get_currency_from_database(self, currency_index):
+    def __get_currency_from_database(self, currency_index):
         currency = Currency.objects.get(pk=currency_index)
         return currency
 
-    def get_currency_unit(self, currency_index):
+    def __get_currency_unit(self, currency_index):
         currency = Currency.objects.get(pk=currency_index)
         return currency.unit
 
-    def get_currency_code(self, currency_index):
-        currency = self.get_currency_from_database(currency_index)
+    def __get_currency_code(self, currency_index):
+        currency = self.__get_currency_from_database(currency_index)
         return currency.code
 
-    def get_last_rate(self, currency_index):
-        bought_currency = self.get_currency_from_database(currency_index)
+    def __get_last_rate(self, currency_index):
+        bought_currency = self.__get_currency_from_database(currency_index)
         rate = bought_currency.rate_and_date_set.all().order_by('-date')[0].rate
 
         return rate
