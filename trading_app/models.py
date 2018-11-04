@@ -55,6 +55,8 @@ class Profile(models.Model):
             if owned_selling_currency.amount >= quantity:
                 owned_selling_currency.amount -= quantity
                 owned_selling_currency.save()
+                if owned_selling_currency.amount == 0:
+                    owned_selling_currency.delete()
                 self.money += round(rate * quantity * unit, 5)
                 self.save()
             else:
