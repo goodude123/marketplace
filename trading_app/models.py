@@ -20,7 +20,7 @@ class Profile(models.Model):
 
         rate = self.get_last_rate(to_bought_index)
         unit = self.get_currency_unit(to_bought_index)
-        price = rate * quantity * unit
+        price = round(rate * quantity * unit, 5)
 
         code = self.get_currency_code(to_bought_index)
 
