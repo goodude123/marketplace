@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from trading_app.forms import SignUpForm, BuyCurrencyForm, SellCurrencyForm
 from trading_app.decorators import prevent_logged_users
+from stock_exchange.models import Currency
 
 
 class Home(TemplateView):
@@ -62,9 +63,9 @@ def sell_currencies(request, initial):
     if request.method == 'POST':
         form = SellCurrencyForm(data=request.POST, user=request.user)
         if form.is_valid():
-            currency_code = form.cleaned_data.get('currency_code')
+            currency_index  = form.cleaned_data.get('currencies')
             quantity = form.cleaned_data.get('quantity')
-            request.user.profile.sell(currency_code, quantity)
+            request.user.profile.sell(currency_index, quantity)
 
             return redirect(reverse('trading_app:owned_currencies'))
         
