@@ -21,9 +21,9 @@ class BuyCurrencyForm(forms.Form):
         self.initial_code = initial_code
 
         self.fields['quantity'] = forms.IntegerField(min_value=1)
-        self.fields['currency_code'] = forms.ChoiceField(choices=self.get_all_currencies(), initial=self.find_initial_index())
+        self.fields['currency_code'] = forms.ChoiceField(choices=self.get_all_currencies(), initial=self.get_initial_index())
 
-    def find_initial_index(self):
+    def get_initial_index(self):
         '''Find index by currency code from url'''
 
         initial_index = 1
@@ -49,17 +49,29 @@ class SellCurrencyForm(forms.Form):
         choices = self.create_index_code_pairs_in_list
 
         self.fields['quantity'] = forms.IntegerField(min_value=1)
-        self.fields['currency_code'] = forms.ChoiceField(choices=choices)
+        self.fields['currencies'] = forms.ChoiceField(choices=choices, initial=self.get_initial_index())
 
     def create_index_code_pairs_in_list(self):
         '''Creates pairs index currency code in list'''
 
         owned_currencies = self.user.profile.boughtcurrency_set.all()
         choices = []
-        i = 0
         for currency in owned_currencies:
-            i += 1
             code = currency.currency_abbreviation
-            choices.append((i, code))
+            index = self.get_currency_index_in_db(code)
+            choices.append((index, code))
 
         return choices
+
+    def get_initial_index(self):
+        initial_index = 1
+        for index, code in dict(self.create_index_code_pairs_in_list()).items():
+            if code == self.initial_code:
+                initial_index = index
+
+        return initial_index
+
+    def get_currency_index_in_db(self, currency_code):
+        currency_db_index = Currency.objects.get(code=currency_code).pk
+
+        return currency_db_index
