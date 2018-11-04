@@ -18,7 +18,7 @@ class Profile(models.Model):
     def buy(self, to_bought_index, quantity):
         "Substracs price from money and adds currencies to owned."
 
-        rate = self.__get_last_rate(to_bought_index)
+        rate = self.__get_currency_last_rate(to_bought_index)
         unit = self.__get_currency_unit(to_bought_index)
         price = round(rate * quantity * unit, 5)
 
@@ -44,9 +44,9 @@ class Profile(models.Model):
             raise errors.BuyingError('Too high price!')
 
     def sell(self, index_to_database, quantity):
-        "Deletes currencies from profile owned, adding money."
+        "Deletes currencies from profile owned, adds money."
 
-        rate = self.__get_last_rate(index_to_database) - 0.004
+        rate = self.__get_currency_last_rate(index_to_database) - 0.004
         code = self.__get_currency_code(index_to_database)
         unit = self.__get_currency_unit(index_to_database)
 
@@ -55,11 +55,16 @@ class Profile(models.Model):
             if owned_selling_currency.amount >= quantity:
                 owned_selling_currency.amount -= quantity
                 owned_selling_currency.save()
-                self.money += rate * quantity * unit
+                self.money += round(rate * quantity * unit, 5)
+                self.save()
             else:
                 raise errors.SellingError('You dont have enough currencies')
         except ObjectDoesNotExist:
             print('You never had that currency.')
+
+    def __get_owned_currencies(self):
+        owned = self.boughtcurrency_set.all()
+        return owned
 
     def __get_currency_from_database(self, currency_index):
         currency = Currency.objects.get(pk=currency_index)
@@ -73,7 +78,7 @@ class Profile(models.Model):
         currency = self.__get_currency_from_database(currency_index)
         return currency.code
 
-    def __get_last_rate(self, currency_index):
+    def __get_currency_last_rate(self, currency_index):
         bought_currency = self.__get_currency_from_database(currency_index)
         rate = bought_currency.rate_and_date_set.all().order_by('-date')[0].rate
 
@@ -88,7 +93,7 @@ class BoughtCurrency(models.Model):
     amount = models.IntegerField()
 
     def __str__(self):
-        designation = self.profile.user.username + ' owned.'
+        designation = self.currency_abbreviation + ' ' + self.profile.user.username + ' owned.'
         return designation
 
 
