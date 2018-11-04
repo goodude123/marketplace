@@ -38,7 +38,9 @@ Django-admin custom commands:
   )
   
   ./manage.py random (
-    creates random course and save it with current date
+    Creates random course and save it with current date.
+    It works only if you already have currencies in database.
+    If not, first use --new and --update.
   )
 
 
