@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from trading_app.forms import SignUpForm, BuyCurrencyForm
+from trading_app.forms import SignUpForm, BuyCurrencyForm, SellCurrencyForm
 from trading_app.decorators import prevent_logged_users
 
 
@@ -55,3 +55,21 @@ def buy_currencies(request, initial):
     else:
         form = BuyCurrencyForm(initial_code=initial)
         return render(request, 'buy_currencies.html', {'form': form, 'initial': initial})
+
+
+@login_required
+def sell_currencies(request, initial):
+    if request.method == 'POST':
+        form = SellCurrencyForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            currency_code = form.cleaned_data.get('currency_code')
+            quantity = form.cleaned_data.get('quantity')
+            request.user.profile.sell(currency_code, quantity)
+
+            return redirect(reverse('trading_app:owned_currencies'))
+        
+        return render(request, 'sell_currencies.html', {'form': form})
+    else:
+        data = {'initial_code': initial, 'user': request.user}
+        form = SellCurrencyForm(**data)
+        return render(request, 'sell_currencies.html', {'form': form})
