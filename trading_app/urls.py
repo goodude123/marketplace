@@ -11,5 +11,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('owned/', views.owned_currencies, name='owned_currencies'),
     path('buy/<str:initial>/', views.buy_currencies, name='buy'),
-    path('api/currencies/', api_views.api_currencies, name='api-currencies')
+    path('sell/<str:initial>/', views.sell_currencies, name='sell'),
+    path('api/currencies/', api_views.api_currencies, name='api-currencies'),
 ]
