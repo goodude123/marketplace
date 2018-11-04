@@ -17,12 +17,20 @@ function calculateAndPrintTotalPrice(rates, units){
     unit = units[index];
     if (quantity > 0) {
         price = quantity * rate * unit;
-        price = price.toFixed(4);
+        price = price.toFixed(5);
+        price = removeTrailingZeros(price);
         response = 'Total Price: ' + price;
     } else {
         response = 'Invalid Value.';
     }
     insertTotalPriceIntoId('totalPrice', response);
+}
+
+
+function removeTrailingZeros(number){
+    number = number * 1;
+    number = number.toString();
+    return number;
 }
 
 
