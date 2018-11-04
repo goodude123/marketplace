@@ -1,7 +1,7 @@
 window.onload = function(){
     addChangeEventToElementId('id_quantity');
     addChangeEventToElementId('id_currency_code');
-}
+};
 
 
 function addChangeEventToElementId(id){
@@ -16,13 +16,21 @@ function calculateAndPrintTotalPrice(rates, units){
     rate = rates[index];
     unit = units[index];
     if (quantity > 0) {
-        price = quantity * rate * unit, 4;
-        price = price.toFixed(4);
-        response = 'Total Price: ' + price
+        price = quantity * rate * unit;
+        price = price.toFixed(5);
+        price = removeTrailingZeros(price);
+        response = 'Total Price: ' + price;
     } else {
-        response = 'Invalid Value.'
+        response = 'Invalid Value.';
     }
     insertTotalPriceIntoId('totalPrice', response);
+}
+
+
+function removeTrailingZeros(number){
+    number = number * 1;
+    number = number.toString();
+    return number;
 }
 
 
@@ -45,7 +53,7 @@ function getCodesAndRatesFromApiAndCalculatePrice(){
         error: function (error_data){
             console.log(error_data);
         }
-    })
+    });
 }
 
 

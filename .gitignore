@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 __pycache__/
 venv
+settings.py
 *.pyc
 *.ico
 .vscode

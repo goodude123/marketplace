@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+
+{% include 'base/jquery.html' %}
+
+    {% load static %}
+
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form }}
+        <button type='submit'>Sell</button>
+    </form>
+
+
+{% endblock %}
