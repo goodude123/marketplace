@@ -53,22 +53,19 @@ class Scrap:
             if Currency.objects.filter(name=currency.name):
                 print('Currency already exists in database.')
             else:
-                currency_record = SingleCurrency(
+                currency_record = Currency(
                     name=currency.name,
                     unit=currency.unit,
-                    abbreviation=currency.code
+                    code=currency.code
                 )
                 currency_record.save()
                 print('Saving', currency_record)
 
     def save_rates_and_dates(self):
         self.scrap_currencies()
-        print(self.currencies)
         print('Length', len(self.currencies))
         for currency in self.currencies:
             # warnings.filterwarnings("ignore", category=RuntimeWarning)
             currency_in_db = Currency.objects.get(name=currency.name)
             rate_and_date = [currency.rate, currency.date]
             save(currency_in_db, rate_and_date)
-
-        print('\nLength after adding data', len(Currency.objects.get(id=1).rate_and_date_set.all()))
