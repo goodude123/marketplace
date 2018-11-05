@@ -6,6 +6,11 @@
 {% include 'base/jquery.html' %}
 
     {% load static %}
+    <script>
+        var endpoint = "{% url 'trading_app:api-currencies' %}";
+    </script>
+    <script src="{% static 'trading_app/scripts/calc_currency_total_price.js' %}"></script>
+    <script src="{% static 'trading_app/scripts/sell.js' %}"></script>
 
     <form method='POST'>
         {% csrf_token %}
@@ -13,5 +18,6 @@
         <button type='submit'>Sell</button>
     </form>
 
+    <p id='totalPrice'></p>
 
 {% endblock %}

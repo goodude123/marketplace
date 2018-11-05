@@ -10,6 +10,7 @@
         var endpoint = "{% url 'trading_app:api-currencies' %}";
     </script>
     <script src="{% static 'trading_app/scripts/calc_currency_total_price.js' %}"></script>
+    <script src="{% static 'trading_app/scripts/buy.js' %}"></script>
 
     <form method='POST'>
         {% csrf_token %}
