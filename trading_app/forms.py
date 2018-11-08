@@ -58,10 +58,25 @@ class SellCurrencyForm(forms.Form):
         choices = []
         for currency in owned_currencies:
             code = currency.currency_abbreviation
-            index = self.get_currency_index_in_db(code)
+            currency_index = self.get_currency_index_in_db(code)
+            index = self.edit_index_to_api_index(currency_index)
             choices.append((index, code))
 
         return choices
+
+    def edit_index_to_api_index(self, currency_db_index):
+        """Edits index to be the same as this to access in Api"""
+        number_of_objects = len(Currency.objects.all())
+        last_id = Currency.objects.order_by('-pk')[0].pk
+        difference = last_id - number_of_objects + 1 # + 1 because list index starts from 0
+        api_index = currency_db_index - difference
+
+        return api_index
+
+    def get_currency_index_in_db(self, currency_code):
+        currency_db_index = Currency.objects.get(code=currency_code).pk
+
+        return currency_db_index
 
     def get_initial_index(self):
         initial_index = 1
@@ -70,8 +85,3 @@ class SellCurrencyForm(forms.Form):
                 initial_index = index
 
         return initial_index
-
-    def get_currency_index_in_db(self, currency_code):
-        currency_db_index = Currency.objects.get(code=currency_code).pk
-
-        return currency_db_index
