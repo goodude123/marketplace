@@ -128,6 +128,8 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    ('trading_app', os.path.join(BASE_DIR, 'trading_app', 'static')),
+    ('stock_exchange', os.path.join(BASE_DIR, 'stock_exchange', 'static')),
 ]
 
 STATIC_URL = '/static/'
