@@ -63,7 +63,14 @@ def sell_currencies(request, initial):
     if request.method == 'POST':
         form = SellCurrencyForm(data=request.POST, user=request.user)
         if form.is_valid():
-            currency_index  = form.cleaned_data.get('currencies')
+            currency_index  = int(form.cleaned_data.get('currencies'))
+            
+            # convert back from api index to database index
+            number_of_objects = len(Currency.objects.all())
+            last_id = Currency.objects.order_by('-pk')[0].pk
+            difference = last_id - number_of_objects + 1
+            currency_index += difference
+
             quantity = form.cleaned_data.get('quantity')
             request.user.profile.sell(currency_index, quantity)
 
