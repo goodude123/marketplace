@@ -22,6 +22,7 @@
 				<a href="{% url 'trading_app:user' %}">Profile</a>
 		        <a href="{% url 'logout' %}">Logout</a>
 		        <p>Your money: {{ user.profile.money }}</p>
+
 		    {% else %}
 		        <a href="{% url 'login' %}">Login</a>
 		        <a href="{% url 'trading_app:signup'%}">Sign Up</a>
