@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+
+{% include 'base/jquery.html' %}
+
+    {% load static %}
+    <script>
+        var endpoint = "{% url 'trading_app:api-currencies' %}";
+    </script>
+    <script src="{% static 'trading_app/scripts/totalPrice.js' %}"></script>
+    <script src="{% static 'trading_app/scripts/buy.js' %}"></script>
+
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form }}
+        <button type='submit'>Buy</button>
+    </form>
+
+    <p id='totalPrice'></p>
+
+{% endblock %}

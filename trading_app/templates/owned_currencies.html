@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+    
+    {% for currency in owned %}
+
+        {{ currency.currency_abbreviation }}
+        {{ currency.amount }}
+        <a href="{% url 'trading_app:sell' currency.currency_abbreviation %}">Sell</a>
+        <br />
+
+    {% endfor %}
+
+{% endblock %}
