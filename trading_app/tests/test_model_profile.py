@@ -12,38 +12,32 @@ first_name = 'john'
 last_name = 'kowalski'
 email = 'john@kowalski.com'
 
-def create_user():
-    user = User.objects.create_user(username=username,
+
+class SetUp(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(username=username,
                                     password=password,
                                     first_name=first_name,
                                     last_name=last_name,
                                     email=email)
-    user.save()
+        user.save()
 
-
-def create_currency():
-    currency = Currency.objects.create(
+        currency = Currency.objects.create(
                                         name='dolar',
                                         unit=1,
                                         code='USD')
-    currency.save()
+        currency.save()
+        currency.rate_and_date_set.create(rate=1, date=timezone.now())
 
-    currency.rate_and_date_set.create(rate=1, date=timezone.now())
+        self.profile = self.get_user().profile
+
+    def get_user(self):
+        user = User.objects.get(username=username)
+
+        return user
 
 
-def get_user():
-    user = User.objects.get(username=username)
-
-    return user
-
-
-class BuyingCurrenciesTestCase(TestCase):
-
-    def setUp(self):
-        "Created user and new currency"
-        create_user()
-        create_currency()
-        self.profile = get_user().profile
+class BuyingCurrenciesTestCase(SetUp):
 
     def test_model_valid_currency_bought(self):
         "Valid bought test, user has enough money to buy."
@@ -78,13 +72,7 @@ class BuyingCurrenciesTestCase(TestCase):
         self.assertEqual(bought.amount, 2 * buys_quantity)
 
 
-class SellingCurrenciesTestCase(TestCase):
-
-    def setUp(self):
-        "Created user and new currency"
-        create_user()
-        create_currency()
-        self.profile = get_user().profile
+class SellingCurrenciesTestCase(SetUp):
 
     def test_model_valid_sold_currencies(self):
         "Valid sold currencies."

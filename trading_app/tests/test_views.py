@@ -15,14 +15,27 @@ last_name = 'kowalski'
 email = 'john@kowalski.com'
 
 
-class UserViewTestCase(TestCase):
+class SetUp(TestCase):
+    def setUp(self):        
 
-    def setUp(self):
-        user = User.objects.create_user(
-                                        username=username,
-                                        password=password
+        user = User.objects.create_user(username=username,
+                                        password=password,
+                                        first_name=first_name,
+                                        last_name=last_name,
+                                        email=email
                                         )
         user.save()
+    
+        currency = Currency.objects.create(
+                                        name='dolar',
+                                        unit=1,
+                                        code='USD')
+        currency.save()
+
+        currency.rate_and_date_set.create(rate=1, date=timezone.now())
+
+
+class UserViewTestCase(SetUp):
 
     def test_unlogged_client_access_to_user_page(self):
         "Unlogged client doesnt get user view"
@@ -39,11 +52,7 @@ class UserViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'user.html')
 
 
-class LoginTestCase(TestCase):
-
-    def setUp(self):
-        user = User.objects.create_user(username=username, password=password)
-        user.save()
+class LoginTestCase(SetUp):
 
     def test_logging_form_with_user_in_database(self):
         "Valid loggin with user in database"
@@ -75,16 +84,7 @@ class LoginTestCase(TestCase):
         self.assertRedirects(response, reverse('trading_app:home'))
 
 
-class SignUpTestCase(TestCase):
-
-    def setUp(self):
-        user = User.objects.create_user(username=username,
-                                        password=password,
-                                        first_name=first_name,
-                                        last_name=last_name,
-                                        email=email
-                                        )
-        user.save()
+class SignUpTestCase(SetUp):
 
     def test_valid_sign_up(self):
         "Valid registration."
@@ -131,35 +131,7 @@ class SignUpTestCase(TestCase):
         self.assertEqual(user.profile.money, 100)
 
 
-def create_user():
-    user = User.objects.create_user(username=username,
-                                    password=password,
-                                    first_name=first_name,
-                                    last_name=last_name,
-                                    email=email)
-    user.save()
-
-
-def create_currency():
-    currency = Currency.objects.create(
-                                        name='dolar',
-                                        unit=1,
-                                        code='USD')
-    currency.save()
-
-    currency.rate_and_date_set.create(rate=1, date=timezone.now())
-
-
-def get_user():
-    user = User.objects.get(username=username)
-
-    return user
-
-
-class OwnedCurrenciesView(TestCase):
-    def setUp(self):
-        create_user()
-        create_currency()
+class OwnedCurrenciesView(SetUp):
 
     def test_logged_user_acces_to_owned_currencies(self):
         "Logged user successfuly gets owned view."

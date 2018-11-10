@@ -2,7 +2,7 @@ import random
 import warnings
 from datetime import datetime
 from stock_exchange.models import Currency
-from ._save import save
+from ._save import save_new_rate_and_date
 
 
 class CurrenciesRandom:
@@ -21,7 +21,7 @@ class CurrenciesRandom:
 
             rate_and_date = [new_random_rate, current_date]
 
-            save(currency_in_db, rate_and_date)
+            save_new_rate(currency_in_db, rate_and_date)
 
     def modify_rate(self, rate):
         operation = self.choose_operation()

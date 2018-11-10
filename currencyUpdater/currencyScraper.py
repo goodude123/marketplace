@@ -1,6 +1,6 @@
 from ._scrap import Scrap
 from stock_exchange.models import Currency
-from stock_exchange.management.commands._save import save
+from stock_exchange.management.commands._save import save_new_rate_and_date
 
 
 def get_currencies():
@@ -27,6 +27,6 @@ def get_rates_and_dates():
         currency_in_db = Currency.objects.get(name=currency.name)
         rate_and_date = [currency.rate, currency.date]
 
-        save(currency_in_db, rate_and_date)
+        save_new_rate_and_date(currency_in_db, rate_and_date)
 
     print('\nLength after adding data', len(Currency.objects.get(id=1).rate_and_date_set.all()))

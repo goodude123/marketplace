@@ -1,16 +1,26 @@
-def save(currency_in_db, rate_and_date):
+def save_new_rate_and_date(currency_in_db, rate_and_date):
     if currency_in_db:
-        rate = rate_and_date[0]
-        date = rate_and_date[1]
-        print(currency_in_db.name, 'found.')
-        print('Rate, Date: ', end='')
-        print(rate, date)
+        rate = get_rate(rate_and_date)
+        date = get_date(rate_and_date)
+        print_info(currency_in_db, rate_and_date)
         currency_in_db.rate_and_date_set.create(
             rate=rate,
             date=date,
         )
         currency_in_db.save()
-        print('Saved.\n')
 
-    else:
-        print('DOESN\'T FIND', currency_in_db.name)
+
+def get_rate(rate_and_date):
+    rate = rate_and_date[0]
+    return rate
+
+def get_date(rate_and_date):
+    date = rate_and_date[1]
+    return date
+
+def print_info(currency, rate_and_date):
+    print(currency.name, 'found.')
+    print('Rate, Date: ', end='')
+    rate = get_rate(rate_and_date)
+    date = get_date(rate_and_date)
+    print(rate, date)
