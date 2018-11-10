@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 __pycache__/
+htmlcov/
 venv
 settings.py
 *.pyc
