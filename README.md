@@ -42,7 +42,13 @@ Django-admin custom commands:
     It works only if you already have currencies in database.
     If not, first use --new and --update.
   )
-
+  
+Test covarage using:
+  covarage run --source=stock_exchange,trading_app ./manage.py test
+  
+Actual test covarage:
+  Module 	statements 	missing 	excluded 	coverage
+  Total 	531 	      148 	    0 	      72%
 
 Actions I had to do on server:
   - allow server host
