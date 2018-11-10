@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from stock_exchange.models import Currency
 from ._currency import SingleCurrency
 from ._request_handle import simple_get
-from ._save import save
+from ._save import save_new_rate_and_date
 
 
 class Scrap:
@@ -68,4 +68,4 @@ class Scrap:
             # warnings.filterwarnings("ignore", category=RuntimeWarning)
             currency_in_db = Currency.objects.get(name=currency.name)
             rate_and_date = [currency.rate, currency.date]
-            save(currency_in_db, rate_and_date)
+            save_new_rate_and_date(currency_in_db, rate_and_date)
