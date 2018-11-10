@@ -44,11 +44,7 @@ Django-admin custom commands:
   )
   
 Test covarage using:
-  - covarage run --source=stock_exchange,trading_app ./manage.py test
-  
-Actual test covarage:
-  - Module 	statements 	missing 	excluded 	coverage
-  - Total 	531 	      148 	    0 	      72%
+  - covarage run --source=app1,app2 ./manage.py test
 
 Actions I had to do on server:
   - allow server host
