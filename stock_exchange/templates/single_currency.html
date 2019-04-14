@@ -8,10 +8,10 @@
 		<td><a href="{% url 'exchange:chart' currency.code %}">History</a></td>
 	</tr>
 
-	{% for course in courses %}
+	{% for valuation in valuations %}
 	<tr>
-		<td>{{ course.date }}</td>
-		<td>{{ course.rate }}</td>
+		<td>{{ valuation.date }}</td>
+		<td>{{ valuation.rate }}</td>
 	</tr>
 	{% endfor %}
 
