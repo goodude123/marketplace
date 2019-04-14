@@ -47,25 +47,20 @@ class TableCurrenciesPage(TemplateView):
         return render(request, 'currencies_table.html', {'currencies': currencies_to_template})
 
 
-def single_currency_page(request, abbr):
-        print('You are looking for', abbr)
-        currency = get_object_or_404(Currency, code=abbr.upper())
-        print('======', currency, '====== Found')
+class SingleCurrencyView(TemplateView):
+    template_name = 'single_currency.html'
 
-        courses_db = currency.rate_and_date_set.all().order_by('-date')[:30]
-        courses_to_template = []
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        currency = get_object_or_404(Currency, code=kwargs['abbr'].upper())
+        context['currency'] = currency
+        context['valuation'] = self.get_valuations(currency)
+        return context
 
-        for course_db in courses_db:
-            course = {}
-            course['date'] = course_db.date
-            course['rate'] = course_db.rate
+    def get_valuations(self, currency):
+        valuations = currency.rate_and_date_set.all().order_by('-date')[:30]
+        return [{'date': valuation.date, 'rate': valuation.rate} for valuation in valuations]
 
-            courses_to_template.append(course)
-
-        return render(request, 'single_currency.html',
-                    {
-                        'currency': currency, 'courses': courses_to_template,
-                    })
 
 
 def currency_converter(request):
@@ -87,12 +82,12 @@ def currency_converter(request):
                 amount = request.GET['amount']
 
                 from_course_unit = [
-                    from_currency.rate_and_date_set.all().order_by('-date')[1].rate,
+                    from_currency.rate_and_date_set.all().order_by('-date')[0].rate,
                     from_currency.unit
                 ]
 
                 to_course_unit = [
-                    to_currency.rate_and_date_set.all().order_by('-date')[1].rate,
+                    to_currency.rate_and_date_set.all().order_by('-date')[0].rate,
                     to_currency.unit
                 ]
 
