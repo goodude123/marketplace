@@ -1,11 +1,11 @@
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from .models import Currency
 from .forms import CurrencyConverterForm
 from .system.pack import pack_currencies
-from .system.real_value import real_course_value
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 
 
 class Currencies(TemplateView):
@@ -20,24 +20,25 @@ def chart(request, abbr):
     return render(request, 'charts.html', {'abbr': abbr.upper()})
 
 
-@api_view()
-def api_chart_data(request, abbr):
-    currency = get_object_or_404(Currency, code=abbr.upper())
-    courses_in_db = currency.rate_and_date_set.all().order_by('-date')[:30]
-    rates = []
-    dates = []
+class ChartDataApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        currency = get_object_or_404(Currency, code=kwargs['abbr'].upper())
+        valuations = currency.rate_and_date_set.all().order_by('-date')[:30]
+        
+        data = self.get_values_and_dates(valuations)
+        return Response(data)
+    
+    def get_values_and_dates(self, valuations):
+        data = {
+            'rates': [],
+            'dates': [],
+        }
 
-    for course in courses_in_db:
-        rates.append(course.rate)
-        dates.append(course.date)
+        for valuation in valuations:
+            data['rates'].append(valuation.rate)
+            data['dates'].append(valuation.date)
 
-    data = {
-        'rates': rates,
-        'dates': dates,
-
-    }
-    return Response(data)
-
+        return data
 
 class TableCurrenciesPage(TemplateView):
     def get(self, request, **kwargs):
@@ -62,40 +63,34 @@ class SingleCurrencyView(TemplateView):
         return [{'date': valuation.date, 'rate': valuation.rate} for valuation in valuations]
 
 
+class CurrencyConverterView(FormView):
+    template_name = 'converter.html'
+    form_class = CurrencyConverterForm
 
-def currency_converter(request):
-    # Operate on send data from form
-    if request.method == 'GET':
-        # if thats a first visit in converter
-        if len(request.GET) == 0:
-            form = CurrencyConverterForm()
-            return render(request, 'converter.html', {'form': form})
+    def form_valid(self, form):
+        from_currency = Currency.objects.get(pk=form.cleaned_data['from_currency'])
+        to_currency = Currency.objects.get(pk=form.cleaned_data['to_currency'])
+        amount = form.cleaned_data['amount']
 
-        # if thats a submitted view
-        else:
-            form = CurrencyConverterForm(request.GET)
-            if form.is_valid():
-                # get values from db
-                from_currency = Currency.objects.get(pk=request.GET['from_currency'])
-                to_currency = Currency.objects.get(pk=request.GET['to_currency'])
+        packed_from_currency = self.pack_currency(from_currency)
+        packed_to_currency = self.pack_currency(to_currency)
 
-                amount = request.GET['amount']
+        result = self.get_result(amount, packed_from_currency, packed_to_currency)
 
-                from_course_unit = [
-                    from_currency.rate_and_date_set.all().order_by('-date')[0].rate,
-                    from_currency.unit
-                ]
+        return render(self.request, 'converter.html', {'form': form, 'result': result})
+    
+    def pack_currency(self, currency):
+        packed = {
+            'valuation': currency.rate_and_date_set.all().order_by('-date')[0].rate,
+            'unit': currency.unit
+        }
+        return packed
 
-                to_course_unit = [
-                    to_currency.rate_and_date_set.all().order_by('-date')[0].rate,
-                    to_currency.unit
-                ]
+    def get_result(self, amount, from_currency, to_currency):
+        real_from_currency_value = self.real_currency_value(from_currency)
+        real_to_currency_value = self.real_currency_value(to_currency)
+        return round(float(amount) * (real_from_currency_value / real_to_currency_value), 4)
 
-                from_real_course_value = real_course_value(from_course_unit)
-                to_real_course_value = real_course_value(to_course_unit)
-
-                result = round(float(amount) * (from_real_course_value / to_real_course_value), 4)
-
-                return render(request, 'converter.html', {'form': form, 'result': result})
-
-        print('Form isn\'t valid')
+    def real_currency_value(self, currency):
+        real_value = currency['valuation'] * currency['unit']
+        return real_value
