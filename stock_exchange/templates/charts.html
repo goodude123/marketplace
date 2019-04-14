@@ -18,17 +18,12 @@
     	success: function(data){
             defaultLabels = data.dates;
             defaultData = data.rates;
-            console.log(data.dates)
-            console.log(data.rates)
     		setChart();
         },
     	error: function(error_data){
-    		console.log('error');
     		console.log(error_data);
         }
-    }
-    	
-    )
+    })
 
     function setChart() {
         var ctx = document.getElementById("myChart").getContext('2d');
