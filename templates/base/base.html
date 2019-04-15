@@ -5,40 +5,72 @@
 	<meta charset="utf-8">
 	<meta name="author" content="Michal Mietus">
 	<meta name="description" content="Stock exchange with randomly ganerated currency values.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="stock, exchange, marketplace, stock-exchange, currency, currencies, currency converter">
 	{% load static %}
 	<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/currency.ico' %}">
+	<link rel="stylesheet" href="{% static 'styles/base.css' %}">
 	<!-- Compiled and minified CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-	<!-- Compiled and minified JavaScript -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 <body>
 	<header>
 		<nav>
-			<a href="{% url 'trading_app:home' %}">Home</a>
-			<a href="{% url 'exchange:currencies' %}">Currencies</a>
-			<a href="{% url 'exchange:table' %}">Table currencies</a>
-			<a href="{% url 'exchange:converter' %}">Converter</a>
-			{% if user.is_authenticated %}
-				<a href="{% url 'trading_app:owned_currencies' %}">Owned</a>
-				<a href="{% url 'trading_app:user' %}">Profile</a>
-		        <a href="{% url 'logout' %}">Logout</a>
-		        <p>Your money: {{ user.profile.money }}</p>
-
-		    {% else %}
-		        <a href="{% url 'login' %}">Login</a>
-		        <a href="{% url 'trading_app:signup'%}">Sign Up</a>
-		    {% endif %}
+			<div class="container">
+				<div class="nav-wrapper">
+					<a href="{% url 'trading_app:home' %}">Home</a>
+					<ul id="nav-mobile" class="right hide-on-med-and-down">
+						<li><a href="{% url 'exchange:currencies' %}">Currencies</a></li>
+						<li><a href="{% url 'exchange:table' %}">Table currencies</a></li>
+						<li><a href="{% url 'exchange:converter' %}">Converter</a></li>
+						{% if user.is_authenticated %}
+							<li><a href="{% url 'trading_app:owned_currencies' %}">Owned</a></li>
+							<li><a href="{% url 'trading_app:user' %}">Profile</a></li>
+							<li><a href="{% url 'logout' %}">Logout</a></li>
+							<li><p>Your money: {{ user.profile.money }}</p></li>
+						{% else %}
+							<li><a href="{% url 'login' %}">Login</a></li>
+							<li><a href="{% url 'trading_app:signup'%}">Sign Up</a></li>
+						{% endif %}
+					</ul>
+					<!-- dropdown content -->
+					<ul id="dropdown1" class="dropdown-content">
+						<li><a href="{% url 'exchange:currencies' %}">Currencies</a></li>
+						<li><a href="{% url 'exchange:table' %}">Table currencies</a></li>
+						<li><a href="{% url 'exchange:converter' %}">Converter</a></li>
+						{% if user.is_authenticated %}
+							<li><a href="{% url 'trading_app:owned_currencies' %}">Owned</a></li>
+							<li><a href="{% url 'trading_app:user' %}">Profile</a></li>
+							<li><a href="{% url 'logout' %}">Logout</a></li>
+						{% else %}
+							<li><a href="{% url 'login' %}">Login</a></li>
+							<li><a href="{% url 'trading_app:signup'%}">Sign Up</a></li>
+						{% endif %}
+					</ul>
+					<ul class="right hide-on-large-only">
+						<!-- Dropdown Trigger -->
+						<li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Menu<i class="material-icons right"></i></a></li>
+					</ul>
+				</div>
+			</div>	
 		</nav>
 	</header>
 	<main>
-		{% block content %}
-		{% endblock %}
+		<div class="container">
+			{% block content %}
+			{% endblock %}
+		</div>
 	</main>
-	<footer>
-		<p>Created by Michal Mietus</p>
-	</footer>
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+
+	<!-- Compiled and minified JavaScript materialize -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script>
+	$(document).ready(function(){
+		$(".dropdown-trigger").dropdown();
+		$('select').formSelect();
+  	});
+	</script>
 </body>
 </html>
