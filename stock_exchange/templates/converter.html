@@ -2,13 +2,30 @@
 
 {% block content %}
 	<form method="POST">
-      {% csrf_token %}
-	    {{form}}
-	    <input type="submit" value="Submit">
+			{% csrf_token %}
+			{% for field in form %}
+			<div class="input-field">
+				{{ field.label }}
+				{{ field }}
+			</div>
+			{% endfor %}
+			<button class="btn waves-effect waves-light red lighten-1" type="submit" name="action">
+				Convert
+			</button>
 	</form>
 
 	{% if result %}
-		<p>{{ result }}</p>
+		<div class="row margin">
+				<div class="col s12 m6">
+					<div class="card blue-grey darken-1">
+						<div class="card-content white-text">
+							<span class="card-title">Result</span>
+							<p>{{ amount }} {{ from }} worth {{ result}} {{ to }} </p>
+						</div>
+					</div>
+				</div>
+			</div>
 	{% endif %}
+
 
 {% endblock %}
