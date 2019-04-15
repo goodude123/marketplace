@@ -1,11 +1,13 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
+    <h4>Welcome on Stock Exchange</h4>
     {% if user.is_authenticated %}
         <p>Hi {{ user.username }}</p>
-        <a href="{% url 'logout' %}">Logout</a>
     {% else %}
-        <p>You're not logged in</p>
-        <a href="{% url 'login' %}">Login</a>
+    <div class="center-align">
+        <a class="waves-effect waves-light btn red lighten-2" href="{% url 'login' %}">Login</a>
+        <a class="waves-effect waves-light btn red lighten-2" href="{% url 'trading_app:signup' %}">Sign Up</a>
+    </div>
     {% endif %}
 {% endblock %}
