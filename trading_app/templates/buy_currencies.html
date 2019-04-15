@@ -15,9 +15,10 @@
     <form method='POST'>
         {% csrf_token %}
         {{ form }}
-        <button type='submit'>Buy</button>
+        <button class="btn waves-effect waves-light red lighten-1" type="submit" name="action">
+            Buy
+        </button>    
     </form>
-
     <p id='totalPrice'></p>
 
 {% endblock %}
