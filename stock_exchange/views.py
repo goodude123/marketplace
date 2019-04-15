@@ -77,7 +77,15 @@ class CurrencyConverterView(FormView):
 
         result = self.get_result(amount, packed_from_currency, packed_to_currency)
 
-        return render(self.request, 'converter.html', {'form': form, 'result': result})
+        data = {
+            'form': form,
+            'amount': amount,
+            'from': from_currency.code,
+            'to': to_currency.code,
+            'result': result,
+        }
+
+        return render(self.request, 'converter.html', data)
     
     def pack_currency(self, currency):
         packed = {
