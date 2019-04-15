@@ -130,6 +130,8 @@ STATICFILES_DIRS = [
     ('stock_exchange', os.path.join(BASE_DIR, 'stock_exchange', 'static')),
 ]
 
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'root/static')
+
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
