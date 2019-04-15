@@ -7,9 +7,9 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--new',
+            '--initial',
             action='store_true',
-            dest='new',
+            dest='initial',
             help='Saves currency info records.',
         )
 
@@ -23,9 +23,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         scrapper = Scrap()
 
-        if options['new']:
+        if options['initial']:
             self.stdout.write('Scraping currency informations.')
             scrapper.save_currency_information()
+            scrapper.save_rates_and_dates()
             self.stdout.write(self.style.SUCCESS('Saved informations.'))
 
         if options['update']:
