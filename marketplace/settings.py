@@ -26,9 +26,7 @@ SECRET_KEY = '*u(zn+@r!_4x%w@-s(9my5l5jv=0n&pgendtkhackjo0yb1ksn'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'hostingsme.pythonanywhere.com',  # serwer domain
-    'testserver',
+    '*',
 ]
 
 
