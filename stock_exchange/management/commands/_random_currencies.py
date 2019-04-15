@@ -21,7 +21,7 @@ class CurrenciesRandom:
 
             rate_and_date = [new_random_rate, current_date]
 
-            save_new_rate(currency_in_db, rate_and_date)
+            save_new_rate_and_date(currency_in_db, rate_and_date)
 
     def modify_rate(self, rate):
         operation = self.choose_operation()
