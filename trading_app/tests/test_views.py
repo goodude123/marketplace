@@ -108,7 +108,7 @@ class SignUpTestCase(SetUp):
                                         'last_name': last_name,
                                         'email': email
                                     })
-        self.assertTemplateUsed(response, 'signup.html')
+        self.assertTemplateUsed(response, 'sign_up.html')
 
     def test_access_sign_up_logged_user(self):
         "Logged user is redirected to home trying access sign up view."

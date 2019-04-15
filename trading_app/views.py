@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth import login, authenticate
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from trading_app.forms import SignUpForm, BuyCurrencyForm, SellCurrencyForm
-from trading_app.decorators import prevent_logged_users
+from trading_app.decorators import prevent_logged_users, prevent_logged_users_class_decorator
 from stock_exchange.models import Currency
 
 
@@ -18,20 +18,18 @@ class User(TemplateView):
     template_name = 'user.html'
 
 
-@prevent_logged_users
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()  # user is already saved
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            authenticated_user = authenticate(username=username, password=password)
-            login(request, authenticated_user)
-            return redirect(reverse('trading_app:home'))
-    else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+@method_decorator(prevent_logged_users_class_decorator, name='dispatch')
+class SignUpView(FormView):
+    form_class = SignUpForm
+    template_name = 'sign_up.html'
+
+    def form_valid(self, form):
+        form.save()  # user is already saved
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        authenticated_user = authenticate(username=username, password=password)
+        login(request, authenticated_user)
+        return redirect(reverse('trading_app:home'))
 
 
 @login_required
