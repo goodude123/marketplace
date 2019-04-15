@@ -2,14 +2,19 @@
 
 
 {% block content %}
-    
+
+    <h2>Your owned currencies</h2>
+        
+    <ul class="collection">
     {% for currency in owned %}
-
-        {{ currency.currency_abbreviation }}
-        {{ currency.amount }}
-        <a href="{% url 'trading_app:sell' currency.currency_abbreviation %}">Sell</a>
-        <br />
-
+        <li class="collection-item">
+            <div>
+                {{ currency.currency_abbreviation }} {{ currency.amount }}
+                <a href="{% url 'trading_app:sell' currency.currency_abbreviation %}" class="secondary-content">
+                    <i class="material-icons">Sell</i>
+                </a>
+            </div>
+        </li>
     {% endfor %}
-
+    </ul>
 {% endblock %}
