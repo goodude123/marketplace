@@ -28,7 +28,7 @@ class SignUpView(FormView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password1')
         authenticated_user = authenticate(username=username, password=password)
-        login(request, authenticated_user)
+        login(self.request, authenticated_user)
         return redirect(reverse('trading_app:home'))
 
 
