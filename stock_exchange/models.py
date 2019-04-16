@@ -2,9 +2,9 @@ from django.db import models
 
 
 class Currency(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
     unit = models.IntegerField(default=1)
-    code = models.CharField(max_length=3)
+    code = models.CharField(max_length=10)
 
     def __str__(self):
         return self.code
