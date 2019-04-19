@@ -1,53 +1,41 @@
-# Marketplace
-Marketplace/stock-exchange
+# Stock Exchange
 
-This project is about web site where you can check currency rates (mainly for PLN currency).
-You can here check actually and past courses, see tables with most popular currencies, convert them,
-check their rate history, diagrams rate in time and many more.
+Stock Exchange is a web application created to display information about currencies and to operate on them in a primary way.
 
+### Features
+For users:
+- currency converter
+- currency valuation charts
+- buy, sell options and own pocket for logged users
 
-It uses exterior libraries/modules/frameworks:
-  - Django
-  - BeautifulSoup4
-  - requests
-  - apscheduler
-  - djangorestframework
-  
-Repository download:
-  - git clone https://github.com/goodude123/marketplace.git
-  
-Environment installation:
-  - python3 -m venv /path/to/new/virtual/environment
-  - source /path/to/new/virtual/environment/bin/activate
-  - pip3 install django
-  - pip3 install bs4
-  - pip3 install requests
-  - pip3 install APScheduler
-  - pip3 install djangorestframework
+For owners:
+- possibility to randomly generate currency values
 
-Running:
-  - python manage.py runserver --noreload 
-  (--noreload flag is by apscheduler)
+### Future improves
+- many currencies displayed on one chart
+- more complicated actions on currencies
 
-  
+### Technologies
+- Django
+- BeautifulSoup4
+- requests
+- apscheduler
+- djangorestframework
 
-Django-admin custom commands:
-  - ./manage.py scrap (
-    - --new  --> scrap constant currency data like: name, abbreviation, unit of course
-    - --update  --> scrap courses and dates
-  )
-  
-  ./manage.py random (
-    Creates random course and save it with current date.
-    It works only if you already have currencies in database.
-    If not, first use --new and --update.
-  )
-  
-Test covarage using:
-  - covarage run --source=app1,app2 ./manage.py test
+### Usage
+## Project installation
+- git clone http://github.com/michal-mietus/exchange
+- cd stock-exchange
+- python3 manage migrate
 
-Actions I had to do on server:
-  - allow server host
-  - replace static JavaScript files with CDN (they didn't work)
-  - remove apscheduler (threads had been disabled)
-  - enable venv before install outside packages
+## Commands
+- scrap --initial
+  Should be called first, it collects all primary data about
+  currencies like their names, abbrevations etc. and also
+  current valuations.
+
+- scrap --update
+  This command scraps and save to database only current valuations with date of scraping.
+
+- random
+  Saves random generated currency values with current date to database.
