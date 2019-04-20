@@ -1,6 +1,6 @@
 # Stock Exchange
 
-Stock Exchange is a web application created to display information about currencies and to operate on them in a primary way.
+Stock Exchange is a web application created to display information about currencies and to operate on them in a basic way.
 
 [Page Link](http://stock-exchange-mm.herokuapp.com/)
 
